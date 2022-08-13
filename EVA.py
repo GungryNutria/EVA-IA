@@ -44,8 +44,7 @@ def main():
         default=500)
     args = parser.parse_args()
     eva = evaController.EvaController()
-    while True:
-        eva.run(args.model, int(args.maxResults),args.scoreThreshold, int(args.numThreads), bool(args.enableEdgeTPU),int(args.cameraId), args.frameWidth, args.frameHeight)
+    eva.run(args.model, int(args.maxResults),args.scoreThreshold, int(args.numThreads), bool(args.enableEdgeTPU),int(args.cameraId), args.frameWidth, args.frameHeight)
 
 if __name__ == '__main__':
     main()
