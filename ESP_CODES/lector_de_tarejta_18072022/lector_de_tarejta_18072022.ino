@@ -59,10 +59,11 @@ void readCard(){
           //int card=cardid;
           Tarjeta.setText(String(cardid));
           Serial.print('=');
-          Serial.println("START");  
+          Serial.println("START");
+          
       }else{
           Serial.print('=');
-          Serial.println("STOP");  
+          Serial.println("STOP");
       }
 }
 
