@@ -3,59 +3,63 @@ import sys
 import time
 import serial
 import cv2
-import tkinter as tk
-from tkinter import Menu, Text, ttk
-from tkinter.constants import W
+import RPi.GPIO as gpio
 import model.material as m
+import threading
 from tflite_support.task import core
 from tflite_support.task import processor
 from tflite_support.task import vision
 
 # Visualization parameters
+aluminio = 0
+plastico = 0
+hojalata = 0
+fondo = 0
+operacion = ""
+
+BTN_START = 10
+BTN_CLOSE = 11
 
 esp = serial.Serial('/dev/ttyUSB0',115200)
 esp2 = serial.Serial('/dev/ttyACM0',9600)
+
 plastico_ruta = "materiales/plastico"
 
-def run(model: str, max_results: int, score_threshold: float, num_threads: int, enable_edgetpu: bool, camera_id: int, width: int, height: int) -> None:
-    
+def run() -> None:
+
+    gpio.setmode(gpio.BCM)
+
+    gpio.setup( BTN_START , gpio.IN)
+    gpio.setup( BTN_CLOSE , gpio.IN)
+
     
     # Initialize the image classification model
-    base_options = core.BaseOptions(file_name=model, use_coral=enable_edgetpu, num_threads=num_threads)
+    base_options = core.BaseOptions(file_name='model.tflite', use_coral=False, num_threads=4)
     
     # Enable Coral by this setting
-    classification_options = processor.ClassificationOptions(max_results=max_results, score_threshold=score_threshold)
+    classification_options = processor.ClassificationOptions(max_results=3, score_threshold=0.0)
     options = vision.ImageClassifierOptions(base_options=base_options, classification_options=classification_options)
     
     classifier = vision.ImageClassifier.create_from_options(options)
-    
-    # Variables to calculate FPS
-    counter, fps = 0, 0
-    start_time = time.time()
-    
-    aluminio = 0
-    plastico = 0
-    hojalata = 0
-    fondo = 0
-    operacion = ""
+
     while True:
         
-        esp_leido = str(esp.read(30))
-        if operacion == "":
-            for i in range(0,len(esp_leido)):
-                if esp_leido[i] == "=":
-                    for x in range(i+1,len(esp_leido)):
-                        if esp_leido[x] == "\\":
-                            break
-                        operacion = operacion + esp_leido[x]
+        # esp_leido = str(esp.read(30))
+        # if operacion == "":
+        #     for i in range(0,len(esp_leido)):
+        #         if esp_leido[i] == "=":
+        #             for x in range(i+1,len(esp_leido)):
+        #                 if esp_leido[x] == "\\":
+        #                     break
+        #                 operacion = operacion + esp_leido[x]
                         
         
-        if(operacion == 'START'):
+        if gpio.input(BTN_START) :
             
             print(operacion)
-            cap = cv2.VideoCapture(camera_id)
-            cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
-            cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+            cap = cv2.VideoCapture(0)
+            cap.set(cv2.CAP_PROP_FRAME_WIDTH, 500)
+            cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 500)
             respuesta = 0
             while cap.isOpened():
                     
@@ -83,6 +87,9 @@ def run(model: str, max_results: int, score_threshold: float, num_threads: int, 
                         aluminio = aluminio + 1
                         fondo =0
                         respuesta = 65
+                        # cambiar led
+                        # Mover Servo
+                        # 
                         esp2.write([respuesta])
                         esp.write([respuesta])
                         respuesta = 0
@@ -128,55 +135,14 @@ def run(model: str, max_results: int, score_threshold: float, num_threads: int, 
                 cv2.destroyAllWindows()
                 time.sleep(2)
                 
-        if operacion == "STOP":
+        if gpio.input(BTN_CLOSE):
             print('RETIRE TARJETA')
             
                 
         
     
 def main():
-    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument(
-        '--model',
-        help='Name of image classification model.',
-        required=False,
-        default='model.tflite')
-    parser.add_argument(
-        '--maxResults',
-        help='Max of classification results.',
-        required=False,
-        default=3)
-    parser.add_argument(
-        '--scoreThreshold',
-        help='The score threshold of classification results.',
-        required=False,
-        type=float,
-        default=0.0)
-    parser.add_argument(
-        '--numThreads',
-        help='Number of CPU threads to run the model.',
-        required=False,
-        default=4)
-    parser.add_argument(
-        '--enableEdgeTPU',
-        help='Whether to run the model on EdgeTPU.',
-        action='store_true',
-        required=False,
-        default=False)
-    parser.add_argument(
-        '--cameraId', help='Id of camera.', required=False, default=0)
-    parser.add_argument(
-        '--frameWidth',
-        help='Width of frame to capture from camera.',
-        required=False,
-        default=1024)
-    parser.add_argument(
-        '--frameHeight',
-        help='Height of frame to capture from camera.',
-        required=False,
-        default=600)
-    args = parser.parse_args()
-    run(args.model, int(args.maxResults),args.scoreThreshold, int(args.numThreads), bool(args.enableEdgeTPU),int(args.cameraId), args.frameWidth, args.frameHeight)
+    run()
 
 if __name__ == '__main__':
     main()
