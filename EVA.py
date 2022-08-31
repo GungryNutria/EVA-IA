@@ -15,13 +15,13 @@ aluminio = 0
 plastico = 0
 hojalata = 0
 fondo = 0
-operacion = ""
 
-BTN_START = 10
-BTN_CLOSE = 11
 
-esp = serial.Serial('/dev/ttyUSB0',115200)
-esp2 = serial.Serial('/dev/ttyACM0',9600)
+BTN_START = 17
+BTN_CLOSE = 27
+
+#esp = serial.Serial('/dev/ttyUSB0',115200)
+#esp2 = serial.Serial('/dev/ttyACM0',9600)
 
 plastico_ruta = "materiales/plastico"
 
@@ -41,7 +41,7 @@ def run() -> None:
     options = vision.ImageClassifierOptions(base_options=base_options, classification_options=classification_options)
     
     classifier = vision.ImageClassifier.create_from_options(options)
-
+    print("Esperando respuesta")
     while True:
         
         # esp_leido = str(esp.read(30))
@@ -54,9 +54,8 @@ def run() -> None:
         #                 operacion = operacion + esp_leido[x]
                         
         
-        if gpio.input(BTN_START) :
+        while gpio.input(BTN_START) :
             
-            print(operacion)
             cap = cv2.VideoCapture(0)
             cap.set(cv2.CAP_PROP_FRAME_WIDTH, 500)
             cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 500)
@@ -90,8 +89,8 @@ def run() -> None:
                         # cambiar led
                         # Mover Servo
                         # 
-                        esp2.write([respuesta])
-                        esp.write([respuesta])
+                        #esp2.write([respuesta])
+                        #esp.write([respuesta])
                         respuesta = 0
                         print(material.material)
                         break
@@ -99,8 +98,8 @@ def run() -> None:
                         hojalata = hojalata + 1
                         fondo = 0
                         respuesta = 72
-                        esp2.write([respuesta])
-                        esp.write([respuesta])
+                        #esp2.write([respuesta])
+                        #esp.write([respuesta])
                         respuesta = 0
                         print(material.material)
                         break
@@ -109,25 +108,23 @@ def run() -> None:
                         plastico = plastico + 1
                         fondo = 0
                         respuesta = 80
-                        esp2.write([respuesta])
-                        esp.write([respuesta])
+                        #esp2.write([respuesta])
+                        #esp.write([respuesta])
                         respuesta = 0
                         print(material.material)
                         break
                                 
                     if material.material == "fondo" and  material.score >= 50:
-                        if operacion == "STOP":
-                            cap.release()
                         fondo = fondo + 1
                         print(material.material+str(fondo))
                         respuesta = 70
-                        esp2.write([respuesta])
-                        esp.write([respuesta])
+                        #esp2.write([respuesta])
+                        #esp.write([respuesta])
                         respuesta = 0
                         if fondo == 200:
                             cap.release()
                             fondo = 0
-                            operacion = "STOP"
+                            
                             print("IA Cerrada")
                 
                 cap.release()
@@ -135,7 +132,7 @@ def run() -> None:
                 cv2.destroyAllWindows()
                 time.sleep(2)
                 
-        if gpio.input(BTN_CLOSE):
+        while gpio.input(BTN_CLOSE):
             print('RETIRE TARJETA')
             
                 
