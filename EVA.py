@@ -1,4 +1,5 @@
 import argparse
+from multiprocessing.pool import RUN
 import sys
 import time
 import serial
@@ -11,27 +12,24 @@ from tflite_support.task import processor
 from tflite_support.task import vision
 
 # Visualization parameters
-aluminio = 0
-plastico = 0
-hojalata = 0
-fondo = 0
 
 
 BTN_START = 17
 BTN_CLOSE = 27
 
-#esp = serial.Serial('/dev/ttyUSB0',115200)
-#esp2 = serial.Serial('/dev/ttyACM0',9600)
+esp = serial.Serial('/dev/ttyUSB0',115200)
+esp2 = serial.Serial('/dev/ttyUSB1',115200)
 
-plastico_ruta = "materiales/plastico"
-
+    
 def run() -> None:
-
+    aluminio = 0
+    plastico = 0
+    hojalata = 0
+    fondo = 0
     gpio.setmode(gpio.BCM)
 
     gpio.setup( BTN_START , gpio.IN)
     gpio.setup( BTN_CLOSE , gpio.IN)
-
     
     # Initialize the image classification model
     base_options = core.BaseOptions(file_name='model.tflite', use_coral=False, num_threads=4)
@@ -42,6 +40,9 @@ def run() -> None:
     
     classifier = vision.ImageClassifier.create_from_options(options)
     print("Esperando respuesta")
+    IA_STATUS_ON = False
+    IA_STATUS_OFF = False
+
     while True:
         
         # esp_leido = str(esp.read(30))
@@ -52,13 +53,16 @@ def run() -> None:
         #                 if esp_leido[x] == "\\":
         #                     break
         #                 operacion = operacion + esp_leido[x]
-                        
+
+        IA_STATUS_ON = gpio.input(BTN_START)
         
-        while gpio.input(BTN_START) :
+
+        while IA_STATUS_ON:
+            IA_STATUS_OFF = gpio.input(BTN_CLOSE)
             
             cap = cv2.VideoCapture(0)
-            cap.set(cv2.CAP_PROP_FRAME_WIDTH, 500)
-            cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 500)
+            cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+            cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
             respuesta = 0
             while cap.isOpened():
                     
@@ -67,19 +71,18 @@ def run() -> None:
                     
                 if not success:
                     sys.exit('ERROR: Unable to read from webcam. Please verify your webcam settings.')
-                counter += 1
+                
                 rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
                 # Create TensorImage from the RGB image
                 tensor_image = vision.TensorImage.create_from_array(rgb_image)
                 # List classification results
                 categories = classifier.classify(tensor_image)
                 materiales = []
-                    
                             
-                for idx, category in enumerate(categories.classifications[0].classes):
-                    class_name = category.class_name
+                for idx, category in enumerate(categories.classifications[0].categories):
+                    category_name = category.category_name
                     score = round(category.score, 2) * 100
-                    materiales.append(m.Material(class_name,score))
+                    materiales.append(m.Material(category_name,score))
                             
                 for material in materiales:
                     if material.material == "aluminio" and material.score >= 60:
@@ -94,6 +97,7 @@ def run() -> None:
                         respuesta = 0
                         print(material.material)
                         break
+
                     if material.material == "hojalata" and  material.score >= 60:
                         hojalata = hojalata + 1
                         fondo = 0
@@ -123,23 +127,38 @@ def run() -> None:
                         respuesta = 0
                         if fondo == 200:
                             cap.release()
-                            fondo = 0
-                            
+                            fondo = 0                        
                             print("IA Cerrada")
                 
+                if IA_STATUS_OFF:
+                    print('RETIRE TARJETA')
+
                 cap.release()
                 cv2.waitKey(0) # waits until a key is pressed
                 cv2.destroyAllWindows()
                 time.sleep(2)
-                
-        while gpio.input(BTN_CLOSE):
-            print('RETIRE TARJETA')
             
-                
+def readContainers() -> None:
+    while True:
+        operacion = ''
+        esp_leido = str(esp.readline())
+        for i in range(0,len(esp_leido)):
+            if esp_leido[i] == "=":
+                for x in range(i+1,len(esp_leido)):
+                    if esp_leido[x] == "\\":
+                        break
+                    operacion = operacion + esp_leido[x]
+        print(operacion)
+        esp2.write(operacion.encode(encoding='UTF-8',errors='strict'))
         
     
 def main():
-    run()
+    # run()
+    ia = threading.Thread(target=run)
+    containers = threading.Thread(target=readContainers)
+    
+    ia.start()
+    containers.start()
 
 if __name__ == '__main__':
     main()
