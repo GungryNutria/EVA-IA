@@ -42,7 +42,6 @@ def run() -> None:
     print("Esperando respuesta")
     IA_STATUS_ON = False
     IA_STATUS_OFF = False
-
     while True:
         
         # esp_leido = str(esp.read(30))
@@ -54,10 +53,10 @@ def run() -> None:
         #                     break
         #                 operacion = operacion + esp_leido[x]
 
-        IA_STATUS_ON = gpio.input(BTN_START)
-        
+        IA_STATUS_ON = gpio.input(BTN_START)        
 
         while IA_STATUS_ON:
+            
             IA_STATUS_OFF = gpio.input(BTN_CLOSE)
             
             cap = cv2.VideoCapture(0)
@@ -129,19 +128,23 @@ def run() -> None:
                             cap.release()
                             fondo = 0                        
                             print("IA Cerrada")
-                
+
                 if IA_STATUS_OFF:
-                    print('RETIRE TARJETA')
+                    IA_STATUS_ON = False
 
                 cap.release()
                 cv2.waitKey(0) # waits until a key is pressed
                 cv2.destroyAllWindows()
                 time.sleep(2)
+                    
+        while IA_STATUS_OFF:
+            print('RETIRE TARJETA')
+            IA_STATUS_OFF = False
             
 def readContainers() -> None:
     while True:
         operacion = ''
-        esp_leido = str(esp.readline())
+        esp_leido = str(esp.readline()).strip()
         for i in range(0,len(esp_leido)):
             if esp_leido[i] == "=":
                 for x in range(i+1,len(esp_leido)):
