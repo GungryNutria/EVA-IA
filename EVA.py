@@ -56,7 +56,7 @@ def run() -> None:
         IA_STATUS_ON = gpio.input(BTN_START)        
 
         while IA_STATUS_ON:
-            
+            print("IA INICIADA")
             IA_STATUS_OFF = gpio.input(BTN_CLOSE)
             
             cap = cv2.VideoCapture(0)
@@ -64,7 +64,7 @@ def run() -> None:
             cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
             respuesta = 0
             while cap.isOpened():
-                    
+                print("Camara abierta")
                 # Start capturing video input from the camera     
                 success,image = cap.read()
                     
@@ -124,10 +124,7 @@ def run() -> None:
                         #esp2.write([respuesta])
                         #esp.write([respuesta])
                         respuesta = 0
-                        if fondo == 200:
-                            cap.release()
-                            fondo = 0                        
-                            print("IA Cerrada")
+                        
 
                 if IA_STATUS_OFF:
                     IA_STATUS_ON = False
@@ -152,7 +149,8 @@ def readContainers() -> None:
                         break
                     operacion = operacion + esp_leido[x]
         print(operacion)
-        esp2.write(operacion.encode(encoding='UTF-8',errors='strict'))
+        esp.write(operacion.encode(encoding='UTF-8',errors='strict'))
+        time.sleep(2)
         
     
 def main():
