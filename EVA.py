@@ -40,8 +40,10 @@ def run() -> None:
     
     classifier = vision.ImageClassifier.create_from_options(options)
     print("Esperando respuesta")
+    
     IA_STATUS_ON = False
     IA_STATUS_OFF = False
+    
     while True:
         
         # esp_leido = str(esp.read(30))
@@ -56,7 +58,7 @@ def run() -> None:
         IA_STATUS_ON = gpio.input(BTN_START)        
 
         while IA_STATUS_ON:
-            print("IA INICIADA")
+            
             IA_STATUS_OFF = gpio.input(BTN_CLOSE)
             
             cap = cv2.VideoCapture(0)
@@ -64,7 +66,7 @@ def run() -> None:
             cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
             respuesta = 0
             while cap.isOpened():
-                print("Camara abierta")
+                    
                 # Start capturing video input from the camera     
                 success,image = cap.read()
                     
@@ -116,7 +118,7 @@ def run() -> None:
                         respuesta = 0
                         print(material.material)
                         break
-                                
+
                     if material.material == "fondo" and  material.score >= 50:
                         fondo = fondo + 1
                         print(material.material+str(fondo))
@@ -124,7 +126,10 @@ def run() -> None:
                         #esp2.write([respuesta])
                         #esp.write([respuesta])
                         respuesta = 0
-                        
+                        if fondo == 200:
+                            cap.release()
+                            fondo = 0                        
+                            print("IA Cerrada")
 
                 if IA_STATUS_OFF:
                     IA_STATUS_ON = False
@@ -140,6 +145,7 @@ def run() -> None:
             
 def readContainers() -> None:
     while True:
+        contenedores = []
         operacion = ''
         esp_leido = str(esp.readline()).strip()
         for i in range(0,len(esp_leido)):
@@ -149,8 +155,11 @@ def readContainers() -> None:
                         break
                     operacion = operacion + esp_leido[x]
         print(operacion)
-        esp.write(operacion.encode(encoding='UTF-8',errors='strict'))
-        time.sleep(2)
+        if operacion.startswith('F'):
+            print("Mando a detener servos")   
+        else:
+            esp2.write(operacion.encode(encoding='UTF-8',errors='strict'))
+
         
     
 def main():

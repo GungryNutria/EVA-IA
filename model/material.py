@@ -4,14 +4,14 @@ class Material:
         self.material = material
         self.score = score
     
-    def getMaterial():
+    def getMaterial(self):
         return self.material
     
-    def getScore():
+    def getScore(self):
         return self.score
     
     def setScore(self,score):
         self.score = score
     
-    def setMaterial():
+    def setMaterial(self,material):
         self.material = material
