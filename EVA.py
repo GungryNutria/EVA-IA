@@ -12,15 +12,12 @@ from tflite_support.task import processor
 from tflite_support.task import vision
 
 # Visualization parameters
-
-
 BTN_START = 17
 BTN_CLOSE = 27
 
 esp = serial.Serial('/dev/ttyUSB0',115200)
 esp2 = serial.Serial('/dev/ttyUSB1',115200)
 
-    
 def run() -> None:
     aluminio = 0
     plastico = 0
@@ -155,8 +152,9 @@ def readContainers() -> None:
                         break
                     operacion = operacion + esp_leido[x]
         print(operacion)
-        if operacion.startswith('F'):
-            print("Mando a detener servos")   
+        
+        if operacion == 'a' or operacion == 'p' or operacion == 'h':
+            print("Mando a detener servos")
         else:
             esp2.write(operacion.encode(encoding='UTF-8',errors='strict'))
 
@@ -172,4 +170,3 @@ def main():
 
 if __name__ == '__main__':
     main()
- 
