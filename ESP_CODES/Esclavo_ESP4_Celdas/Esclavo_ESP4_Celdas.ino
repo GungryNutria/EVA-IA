@@ -10,14 +10,13 @@ HX711 balanzaH;
 HX711 balanzaO;
 
 //DECLARACION DE PINES----------------
-const int stopSignal = 32;
-const int startSignal = 33;
-
-const int CLK= 18;
-const int DTA = 19; //REVISAR COMPATIBILIDAD DE PINES
-const int DTP = 21;
-const int DTH= 22;
-const int DTO = 23;
+#define stopSignal 32
+#define startSignal 33
+#define CLK 18
+#define DTA 19 //REVISAR COMPATIBILIDAD DE PINES
+#define DTP 21
+#define DTH 22
+#define DTO 23
 
 //DECLARACION DE VARIABLES
 float peso0A; //PESO INICIAL
@@ -48,7 +47,7 @@ void inicioBalanzaA(){
     
   }
 
-void inicioBalanzaB(){
+void inicioBalanzaP(){
   
     balanzaP.begin(DTP, CLK);
     balanzaP.set_scale(-230.6); // Establecemos la escala
@@ -73,28 +72,28 @@ void inicioBalanzaO(){
   }  
 //CALCULAR PESO INICIAL
 
-void pesoInicialA(){
+float pesoInicialA(){
   
   peso0A = balanzaA.get_units(20);
   return peso0A;
   
   }
   
-void pesoInicialP(){
+float pesoInicialP(){
   
   peso0P = balanzaP.get_units(20);
   return peso0P;
   
   }
 
-void pesoInicialH(){
+float pesoInicialH(){
   
   peso0H = balanzaH.get_units(20);
   return peso0H;
   
   }
 
-void pesoInicialO(){
+float pesoInicialO(){
   
   peso0O = balanzaO.get_units(20);
   return peso0O;
@@ -103,28 +102,28 @@ void pesoInicialO(){
 
 //CALCULAR PESO FINAL
 
-void pesoFinalA(){
+float pesoFinalA(){
   
   pesoFA = balanzaA.get_units(20);
   return pesoFA;
   
   }
 
-void pesoFinalP(){
+float pesoFinalP(){
   
   pesoFP = balanzaP.get_units(20);
   return pesoFP;
   
   }
 
-void pesoFinalH(){
+float pesoFinalH(){
   
-  pesoFC = balanzaH.get_units(20);
+  pesoFH = balanzaH.get_units(20);
   return pesoFH;
   
   }
 
-void pesoFinalO(){
+float pesoFinalO(){
   
   pesoFO = balanzaO.get_units(20);
   return pesoFO;
@@ -135,13 +134,13 @@ void pesoFinalO(){
 void setup() {
   //INICIALIZAR
   Serial.begin(115200);
-  rtc_clk_cpu_freq_set(RTC_CPU_FREQ_80M);
+  //rtc_clk_cpu_freq_set(RTC_CPU_FREQ_80M);
   pinMode(startSignal,INPUT); //PIN INICIO
-  pinMode(stopSignal);
+  pinMode(stopSignal,INPUT);
   inicioBalanzaA();
-  inicioBalanzaB();
-  inicioBalanzaC();
-  inicioBalanzaD();
+  inicioBalanzaP();
+  inicioBalanzaH();
+  inicioBalanzaO();
   
   }
 
@@ -153,10 +152,9 @@ void loop() {
     peso0P = pesoInicialP();
     peso0H = pesoInicialH();
     peso0O = pesoInicialO();
+  }
 
-    do{
-    //NADA DE NADA
-    }while(digitalRead(stopSignal)==0);
+  if(digitalRead(stopSignal) == 1){
   //PESO FINAL
   pesoFA = pesoFinalA();
   pesoFP = pesoFinalP();
@@ -165,14 +163,9 @@ void loop() {
 
   //PESO TOTAL - DIFERENCIA
   pesoA = pesoFA - peso0A;
-  pesoB = pesoFB - peso0B;
-  pesoC = pesoFC - peso0C;
-  pesoD = pesoFD - peso0D;
-    
+  pesoP = pesoFP - peso0P;
+  pesoH = pesoFH - peso0H;
+  pesoO = pesoFO - peso0O;
+
   }
-
-  
-
-
-  
-  }
+ }

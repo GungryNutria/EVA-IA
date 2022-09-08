@@ -1,12 +1,13 @@
 //***********************************LIBRERIAS**************************
 #include <Nextion.h>
 #include <SPI.h>
-#include <UNIT_PN532.h> //Librería Modificada
+#include <UNIT_PN532.h> //Librkjjuhjería Modificada
 
 
 //****************************DECLARACION DE PINES*********************************
 #define startBtn 13
 #define stopBtn 33
+
 #define PN532_SCK  18
 #define PN532_MOSI 23
 #define PN532_SS   5
@@ -15,13 +16,14 @@
 #define LED 2
 
 #define startSignal 32
-#define stopSignal 27
+#define stopSignal 25
 
 //***************************DECLARACION DE VARIABLES****************************
 uint8_t DatoRecibido[4]; //Para almacenar los datos
 uint32_t cardid;
 uint32_t versiondata;
-
+char material;
+String porcentaje;
 UNIT_PN532 nfc(PN532_SS);// Línea enfocada para la comunicación por SPI
 
 //**********************************NEXTION*************************************
@@ -53,10 +55,9 @@ NexTouch *nex_listen_list[]{
 void setupNextion(){ //INICIAR SETUP NEXTION
   
   nexInit();
-  Serial.begin(115200); //QUITAR DESPUES++++
+  Serial.begin(115200); 
   procesoBtn.attachPush(proceso, &procesoBtn);
   saldoBtn.attachPush(saldo, &saldoBtn);
-  Serial.print("NEXTION SETUP");
   page0.show();  
   
   }
@@ -67,7 +68,7 @@ void setupTarjeta(){ //REVISAR+++++++++++++++
   
   if (! versiondata) { //Si no se encuentra comunicación con la placa --->
   while (1); // Detener
-  Serial.print("NO SE ENCONTRO EL LECTOR"); //COLOCAR CODIGO DE ERROR A EDGARDO ++++++++++++++++++++
+  //Serial.print("NO SE ENCONTRO EL LECTOR"); //COLOCAR CODIGO DE ERROR A EDGARDO ++++++++++++++++++++
   }
   
   //Establezca el número máximo de reintentos para leer de una tarjeta. REVISAR++++++++++++++++
@@ -75,7 +76,7 @@ void setupTarjeta(){ //REVISAR+++++++++++++++
   //que es el comportamiento predeterminado del PN532. 
   nfc.setPassiveActivationRetries(0xFF);
   nfc.SAMConfig();
-  Serial.print("TARJETA SETUP");
+  //Serial.print("TARJETA SETUP");
 }
 
 String IDTarjeta(){ //FUNCIÓN QUE LEE EL ID DE LA TARJETA
@@ -102,6 +103,7 @@ String ID = "";
     return id_tarjeta = IDTarjeta();
   }
   }
+
 
 void proceso(void*ptr){
   //AL PRESIONAR EL BOTON VERDE, SE EVALUA LA PRESENCIA DE LA TARJETA Y SI ES VERDADERA, SE CONTINUA. DE LO CONTRARIO SE MENCIONA EN LA PANTALLA
@@ -130,20 +132,46 @@ void proceso(void*ptr){
 
   //SEÑAL DE INICIO ESCLAVOS Y RASP
   digitalWrite(startSignal,HIGH);
-  delay(1000);
+  delay(2000);
   digitalWrite(startSignal,LOW); //APAGAMOS EL PIN?++++
 
   //ESPERA DE BOTON stopBtn ..............................
   do{
-
+    
     //RECIBIR DATO ULTRASONICOS CADA 10S ??
-    if(Serial.available()){ //REVISAR +++++++++++++++++
-      //IMPRIMIR EN PANTALLA EL VALOR DE ULTRASONICOS CON MILLIS
-      plasticos.setText("VARIABLE");
-      metal.setText("REVISAR");
-      aluminio.setText("REVISAR");
-      organica.setText("REVISAR");
-      desconocido.setText("REVISAR");
+    if(Serial.available()){ 
+      String HCplastico = "";
+      HCplastico = String(Serial.readString());
+      material = HCplastico.charAt(0);
+      for(int i = 1; i < HCplastico.length(); i++){
+        porcentaje = porcentaje + HCplastico.charAt(i);
+      }
+      
+      switch(material){
+        case 'A':
+        aluminio.setText (porcentaje);
+        porcentaje = "";
+        break;
+        case 'P':
+        plasticos.setText(porcentaje);
+        porcentaje = "";
+        break;
+        case 'H':
+        metal.setText(porcentaje);
+        porcentaje = "";
+        break;
+        case 'O':
+        organica.setText(porcentaje);
+        porcentaje = "";
+        break;
+        case'D':
+        desconocido.setText(porcentaje);
+        porcentaje = "";
+        break;
+                                                                                                                                                                                                                                                                                                                                                               
+      }
+ 
+      
 
       
       }
@@ -153,14 +181,18 @@ void proceso(void*ptr){
 
   //FINAL DEL PROCESO
   digitalWrite(stopSignal,HIGH);
-  delay(1000);
+  delay(3000);
   digitalWrite(stopSignal,LOW);
+  digitalWrite(LED,LOW);
+
+  //mandar ID a DB
+  Serial.print("=");
+  Serial.println(ID);
   
+  ESP.restart();
   //MOSTRAR DATOS EN PANTALLA?? ++++++++++++++
   //SE MUESTRA UNA PANTALLA 10 SEGUNDOS CON LOS PUNTOS GENERADOS... Y KILOGRAMOS??? +++++++++++++++++++++
   
-  delay(2000);
-  page0.show();
 
   }
 
@@ -172,9 +204,9 @@ void saldo(void*ptr){
         
 
     }while(digitalRead(stopBtn) != 0);
-
+    
     delay(3000);
-    page0.show();
+    ESP.restart();
 
   }
 
@@ -187,10 +219,7 @@ void setup() {
   pinMode(startSignal,OUTPUT);
   pinMode(stopSignal,OUTPUT);
   pinMode(LED,OUTPUT);
-  Serial.begin(115200);
-  labelTarjeta.setText("LISTO");
-
-  
+  Serial.begin(115200); 
 }
 
 void loop() {
