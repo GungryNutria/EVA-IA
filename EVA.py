@@ -129,6 +129,7 @@ def run() -> None:
                             print("IA Cerrada")
                     else:
                         print("Desconocido")
+                        break
 
                 if IA_STATUS_OFF:
                     IA_STATUS_ON = False
@@ -146,7 +147,7 @@ def readContainers() -> None:
     while True:
         contenedores = []
         operacion = ''
-        esp_leido = str(esp.readline()).strip()
+        esp_leido = str(esp2.readline()).strip()
         for i in range(0,len(esp_leido)):
             if esp_leido[i] == "=":
                 for x in range(i+1,len(esp_leido)):
@@ -158,7 +159,7 @@ def readContainers() -> None:
         if operacion == 'a' or operacion == 'p' or operacion == 'h':
             print("Mando a detener servos")
         else:
-            esp2.write(operacion.encode(encoding='UTF-8',errors='strict'))
+            esp.write(operacion.encode(encoding='UTF-8',errors='strict'))
 
         
     
