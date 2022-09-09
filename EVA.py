@@ -96,7 +96,7 @@ def run() -> None:
                         print(material.material)
                         break
 
-                    if material.material == "hojalata" and  material.score >= 60:
+                    elif material.material == "hojalata" and  material.score >= 60:
                         hojalata = hojalata + 1
                         fondo = 0
                         respuesta = 72
@@ -106,7 +106,7 @@ def run() -> None:
                         print(material.material)
                         break
                                     
-                    if material.material == "plastico" and  material.score >= 60:
+                    elif material.material == "plastico" and  material.score >= 60:
                         plastico = plastico + 1
                         fondo = 0
                         respuesta = 80
@@ -116,7 +116,7 @@ def run() -> None:
                         print(material.material)
                         break
 
-                    if material.material == "fondo" and  material.score >= 50:
+                    elif material.material == "fondo" and  material.score >= 50:
                         fondo = fondo + 1
                         print(material.material+str(fondo))
                         respuesta = 70
@@ -127,6 +127,8 @@ def run() -> None:
                             cap.release()
                             fondo = 0                        
                             print("IA Cerrada")
+                    else:
+                        print("Desconocido")
 
                 if IA_STATUS_OFF:
                     IA_STATUS_ON = False
@@ -152,7 +154,7 @@ def readContainers() -> None:
                         break
                     operacion = operacion + esp_leido[x]
         print(operacion)
-        
+
         if operacion == 'a' or operacion == 'p' or operacion == 'h':
             print("Mando a detener servos")
         else:
