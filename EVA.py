@@ -118,15 +118,11 @@ def run() -> None:
 
                     elif material.material == "fondo" and  material.score >= 50:
                         fondo = fondo + 1
-                        print(material.material+str(fondo))
+                        print(material.material)
                         respuesta = 70
                         #esp2.write([respuesta])
                         #esp.write([respuesta])
                         respuesta = 0
-                        if fondo == 200:
-                            cap.release()
-                            fondo = 0                        
-                            print("IA Cerrada")
                     else:
                         print("Desconocido")
                         break
@@ -141,6 +137,7 @@ def run() -> None:
                     
         while IA_STATUS_OFF:
             print('RETIRE TARJETA')
+            esp2.close()
             IA_STATUS_OFF = False
             
 def readContainers() -> None:
