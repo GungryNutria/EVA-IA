@@ -26,9 +26,13 @@ ruta_hojalata = "materiales/hojalata/"
 ruta_desconocido = "materiales/desconocido/"
 
 caracteres = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","1","2","3","4","5","6","7","8","9","0"}
+
 nombre_imagen = ""
+caracter_random = ""
+
 def generateImageName(m):
     nombre_imagen += m+"_"
+    
     for x in range(6):
         nombre_imagen += caracteres[random.randint(0,len(caracteres)-1)]
     return nombre_imagen
@@ -91,7 +95,12 @@ def run() -> None:
                             
                 for material in materiales:
                     if material.material == "aluminio" and material.score >= 60:
-                        cv2.imwrite(ruta_aluminio+generateImageName(material)+".jpg",image)
+                        nombre_imagen += material
+                        nombre_imagen += "_"
+                        for x in range(6):
+                            nombre_imagen += caracteres[random.randint(0,len(caracteres)-1)]
+                        
+                        cv2.imwrite(ruta_aluminio+""+nombre_imagen+".jpg",image)
                         respuesta = 65
                         respuesta = 0
                         print(material.material)
