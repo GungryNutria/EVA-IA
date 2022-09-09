@@ -100,7 +100,7 @@ def run() -> None:
                         nombre_imagen += str(random.randint(0,10000))
                         
                         cv2.imwrite(ruta_aluminio+""+nombre_imagen+".jpg",image)
-
+                        nombre_imagen = ""
                         respuesta = 65
                         respuesta = 0
                         print(material.material)
@@ -112,6 +112,7 @@ def run() -> None:
                         nombre_imagen += str(random.randint(0,10000))
                         
                         cv2.imwrite(ruta_hojalata+""+nombre_imagen+".jpg",image)
+                        nombre_imagen = ""
                         hojalata = hojalata + 1
                         fondo = 0
                         respuesta = 72
@@ -125,6 +126,7 @@ def run() -> None:
                         nombre_imagen = nombre_imagen + "_"
                         nombre_imagen += str(random.randint(0,10000))
                         cv2.imwrite(ruta_plastico+""+nombre_imagen+".jpg",image)
+                        nombre_imagen = ""
                         plastico = plastico + 1
                         fondo = 0
                         respuesta = 80
@@ -164,7 +166,6 @@ def run() -> None:
                     
         while IA_STATUS_OFF:
             print('RETIRE TARJETA')
-            esp2.close()
             IA_STATUS_OFF = False
             
 def readContainers() -> None:
