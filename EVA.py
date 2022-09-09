@@ -154,9 +154,7 @@ def run() -> None:
                         respuesta = 0
                     else:
                         nombre_imagen += "desconocido_"
-                        for x in range(6):
-                            nombre_imagen = nombre_imagen + caracteres[random.randint(0,len(caracteres)-1)]
-                        
+                        nombre_imagen += str(random.randint(0,10000))
                         cv2.imwrite(ruta_aluminio+""+nombre_imagen+".jpg",image)
                         print("Desconocido")
                         break
