@@ -176,7 +176,7 @@ def readContainers() -> None:
         for i in range(0,len(esp_leido)):
             if esp_leido[i] == "=":
                 for x in range(i+1,len(esp_leido)):
-                    if esp_leido[x] == ":":
+                    if esp_leido[x] == "=":
                         break
                     operacion = operacion + esp_leido[x]
         print(operacion)
