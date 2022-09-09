@@ -180,6 +180,7 @@ def readContainers() -> None:
                         break
                     operacion = operacion + esp_leido[x]
         print(operacion)
+        esp_leido = ""
         esp2.write(operacion.encode(encoding='UTF-8',errors='strict'))
 
         
