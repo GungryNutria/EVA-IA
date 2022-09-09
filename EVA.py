@@ -95,7 +95,7 @@ def run() -> None:
                             
                 for material in materiales:
                     if material.material == "aluminio" and material.score >= 60:
-                        nombre_imagen = nombre_imagen + material
+                        nombre_imagen = nombre_imagen + material.material
                         nombre_imagen = nombre_imagen + "_"
                         for x in range(6):
                             nombre_imagen = nombre_imagen + caracteres[random.randint(0,len(caracteres)-1)]
@@ -108,7 +108,7 @@ def run() -> None:
                         break
 
                     elif material.material == "hojalata" and  material.score >= 60:
-                        nombre_imagen = nombre_imagen + material
+                        nombre_imagen = nombre_imagen + material.material
                         nombre_imagen = nombre_imagen + "_"
                         for x in range(6):
                             nombre_imagen = nombre_imagen + caracteres[random.randint(0,len(caracteres)-1)]
@@ -124,7 +124,7 @@ def run() -> None:
                         break
                                     
                     elif material.material == "plastico" and  material.score >= 60:
-                        nombre_imagen = nombre_imagen + material
+                        nombre_imagen = nombre_imagen + material.material
                         nombre_imagen = nombre_imagen + "_"
                         for x in range(6):
                             nombre_imagen = nombre_imagen + caracteres[random.randint(0,len(caracteres)-1)]
@@ -140,7 +140,7 @@ def run() -> None:
                         break
 
                     elif material.material == "fondo" and  material.score >= 50:
-                        nombre_imagen = nombre_imagen + material
+                        nombre_imagen = nombre_imagen + material.material
                         nombre_imagen = nombre_imagen + "_"
                         for x in range(6):
                             nombre_imagen = nombre_imagen + caracteres[random.randint(0,len(caracteres)-1)]
