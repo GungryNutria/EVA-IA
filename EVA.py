@@ -97,8 +97,7 @@ def run() -> None:
                     if material.material == "aluminio" and material.score >= 60:
                         nombre_imagen = nombre_imagen + material.material
                         nombre_imagen = nombre_imagen + "_"
-                        for x in range(6):
-                            nombre_imagen = nombre_imagen + caracteres[random.randint(0,len(caracteres)-1)]
+                        nombre_imagen += str(random.randint(0,10000))
                         
                         cv2.imwrite(ruta_aluminio+""+nombre_imagen+".jpg",image)
 
@@ -110,8 +109,7 @@ def run() -> None:
                     elif material.material == "hojalata" and  material.score >= 60:
                         nombre_imagen = nombre_imagen + material.material
                         nombre_imagen = nombre_imagen + "_"
-                        for x in range(6):
-                            nombre_imagen = nombre_imagen + caracteres[random.randint(0,len(caracteres)-1)]
+                        nombre_imagen += str(random.randint(0,10000))
                         
                         cv2.imwrite(ruta_aluminio+""+nombre_imagen+".jpg",image)
                         hojalata = hojalata + 1
@@ -122,13 +120,10 @@ def run() -> None:
                         respuesta = 0
                         print(material.material)
                         break
-                                    
                     elif material.material == "plastico" and  material.score >= 60:
                         nombre_imagen = nombre_imagen + material.material
                         nombre_imagen = nombre_imagen + "_"
-                        for x in range(6):
-                            nombre_imagen = nombre_imagen + caracteres[random.randint(0,len(caracteres)-1)]
-                        
+                        nombre_imagen += str(random.randint(0,10000))
                         cv2.imwrite(ruta_aluminio+""+nombre_imagen+".jpg",image)
                         plastico = plastico + 1
                         fondo = 0
@@ -146,6 +141,7 @@ def run() -> None:
                             nombre_imagen = nombre_imagen + caracteres[random.randint(0,len(caracteres)-1)]
                         
                         cv2.imwrite(ruta_aluminio+""+nombre_imagen+".jpg",image)
+                        nombre_imagen = ""                        
                         fondo = fondo + 1
                         print(material.material)
                         respuesta = 70
@@ -156,6 +152,7 @@ def run() -> None:
                         nombre_imagen += "desconocido_"
                         nombre_imagen += str(random.randint(0,10000))
                         cv2.imwrite(ruta_aluminio+""+nombre_imagen+".jpg",image)
+                        nombre_imagen = ""
                         print("Desconocido")
                         break
 
