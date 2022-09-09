@@ -153,10 +153,8 @@ def readContainers() -> None:
                     operacion = operacion + esp_leido[x]
         print(operacion)
 
-        if operacion == 'a' or operacion == 'p' or operacion == 'h':
-            print("Mando a detener servos")
-        else:
-            esp.write(operacion.encode(encoding='UTF-8',errors='strict'))
+        esp.write(operacion.encode(encoding='UTF-8',errors='strict'))
+        time.sleep(2)
 
         
     
