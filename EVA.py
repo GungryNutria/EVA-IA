@@ -1,4 +1,4 @@
-import argparse
+
 from multiprocessing.pool import RUN
 import sys
 import time
@@ -7,6 +7,7 @@ import cv2
 import RPi.GPIO as gpio
 import model.material as m
 import threading
+import random
 from tflite_support.task import core
 from tflite_support.task import processor
 from tflite_support.task import vision
@@ -17,6 +18,21 @@ BTN_CLOSE = 27
 
 esp = serial.Serial('/dev/ttyUSB0',115200)
 esp2 = serial.Serial('/dev/ttyUSB1',115200)
+
+ruta_fondo = "materiales/fondo/"
+ruta_plastico = "materiales/plastico/"
+ruta_aluminio = "materiales/aluminio/"
+ruta_hojalata = "materiales/hojalata/"
+ruta_desconocido = "materiales/desconocido/"
+
+caracteres = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","1","2","3","4","5","6","7","8","9","0"}
+nombre_imagen = ""
+def generateImageName(m):
+    nombre_imagen += m+"_"
+    for x in range(6):
+        nombre_imagen += caracteres[random.randint(0,len(caracteres)-1)]
+    return nombre_imagen
+
 
 def run() -> None:
     aluminio = 0
@@ -42,15 +58,6 @@ def run() -> None:
     IA_STATUS_OFF = False
     
     while True:
-        
-        # esp_leido = str(esp.read(30))
-        # if operacion == "":
-        #     for i in range(0,len(esp_leido)):
-        #         if esp_leido[i] == "=":
-        #             for x in range(i+1,len(esp_leido)):
-        #                 if esp_leido[x] == "\\":
-        #                     break
-        #                 operacion = operacion + esp_leido[x]
 
         IA_STATUS_ON = gpio.input(BTN_START)        
 
@@ -84,19 +91,14 @@ def run() -> None:
                             
                 for material in materiales:
                     if material.material == "aluminio" and material.score >= 60:
-                        aluminio = aluminio + 1
-                        fondo =0
+                        cv2.imwrite(ruta_aluminio+generateImageName(material)+".jpg",image)
                         respuesta = 65
-                        # cambiar led
-                        # Mover Servo
-                        # 
-                        #esp2.write([respuesta])
-                        #esp.write([respuesta])
                         respuesta = 0
                         print(material.material)
                         break
 
                     elif material.material == "hojalata" and  material.score >= 60:
+                        cv2.imwrite(ruta_hojalata+generateImageName(material)+".jpg",image)
                         hojalata = hojalata + 1
                         fondo = 0
                         respuesta = 72
@@ -107,6 +109,7 @@ def run() -> None:
                         break
                                     
                     elif material.material == "plastico" and  material.score >= 60:
+                        cv2.imwrite(ruta_plastico+generateImageName(material)+".jpg",image)
                         plastico = plastico + 1
                         fondo = 0
                         respuesta = 80
@@ -117,6 +120,7 @@ def run() -> None:
                         break
 
                     elif material.material == "fondo" and  material.score >= 50:
+                        cv2.imwrite(ruta_fondo+generateImageName(material)+".jpg",image)
                         fondo = fondo + 1
                         print(material.material)
                         respuesta = 70
@@ -124,6 +128,7 @@ def run() -> None:
                         #esp.write([respuesta])
                         respuesta = 0
                     else:
+                        cv2.imwrite(ruta_desconocido+generateImageName("desconocido")+".jpg",image)
                         print("Desconocido")
                         break
 
@@ -144,7 +149,7 @@ def readContainers() -> None:
     while True:
         contenedores = []
         operacion = ''
-        esp_leido = str(esp2.readline()).strip()
+        esp_leido = str(esp.readline()).strip()
         for i in range(0,len(esp_leido)):
             if esp_leido[i] == "=":
                 for x in range(i+1,len(esp_leido)):
@@ -152,9 +157,7 @@ def readContainers() -> None:
                         break
                     operacion = operacion + esp_leido[x]
         print(operacion)
-
-        esp.write(operacion.encode(encoding='UTF-8',errors='strict'))
-        time.sleep(2)
+        esp2.write(operacion.encode(encoding='UTF-8',errors='strict'))
 
         
     
