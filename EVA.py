@@ -8,6 +8,7 @@ import RPi.GPIO as gpio
 import model.material as m
 import threading
 import random
+from os.path import exists
 from tflite_support.task import core
 from tflite_support.task import processor
 from tflite_support.task import vision
@@ -19,22 +20,17 @@ BTN_CLOSE = 27
 esp = serial.Serial('/dev/ttyUSB0',115200)
 esp2 = serial.Serial('/dev/ttyUSB1',115200)
 
-ruta_fondo = "materiales/fondo/"
-ruta_plastico = "materiales/plastico/"
-ruta_aluminio = "materiales/aluminio/"
-ruta_hojalata = "materiales/hojalata/"
-ruta_desconocido = "materiales/desconocido/"
+ruta_default = "materiales/"
 
-caracteres = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","1","2","3","4","5","6","7","8","9","0"}
+def saveImage(material,path):
+    image_id = str(random.randint(0,10000))
+    ruta = "materiales/{}/{}_{}.jpg".format(material,material,image_id)
+    if exists(ruta):
+        saveImage(material,path)
+    else:
+        cv2.imwrite(ruta,path)
 
 
-
-def generateImageName(m):
-    nombre_imagen += m+"_"
-    
-    for x in range(6):
-        nombre_imagen += caracteres[random.randint(0,len(caracteres)-1)]
-    return nombre_imagen
 
 
 def run() -> None:
@@ -95,25 +91,18 @@ def run() -> None:
                             
                 for material in materiales:
                     if material.material == "aluminio" and material.score >= 60:
-                        nombre_imagen = nombre_imagen + material.material
-                        nombre_imagen = nombre_imagen + "_"
-                        nombre_imagen += str(random.randint(0,10000))
-                        
-                        cv2.imwrite(ruta_aluminio+""+nombre_imagen+".jpg",image)
-                        nombre_imagen = ""
+                        saveImage(material.material,image)
+                        aluminio+=1
                         respuesta = 65
+                        #esp2.write([respuesta])
+                        #esp.write([respuesta])
                         respuesta = 0
                         print(material.material)
                         break
 
                     elif material.material == "hojalata" and  material.score >= 60:
-                        nombre_imagen = nombre_imagen + material.material
-                        nombre_imagen = nombre_imagen + "_"
-                        nombre_imagen += str(random.randint(0,10000))
-                        
-                        cv2.imwrite(ruta_hojalata+""+nombre_imagen+".jpg",image)
-                        nombre_imagen = ""
-                        hojalata = hojalata + 1
+                        saveImage(material.material,image)
+                        hojalata +=1
                         fondo = 0
                         respuesta = 72
                         #esp2.write([respuesta])
@@ -122,12 +111,8 @@ def run() -> None:
                         print(material.material)
                         break
                     elif material.material == "plastico" and  material.score >= 60:
-                        nombre_imagen = nombre_imagen + material.material
-                        nombre_imagen = nombre_imagen + "_"
-                        nombre_imagen += str(random.randint(0,10000))
-                        cv2.imwrite(ruta_plastico+""+nombre_imagen+".jpg",image)
-                        nombre_imagen = ""
-                        plastico = plastico + 1
+                        saveImage(material.material,image)
+                        plastico += 1
                         fondo = 0
                         respuesta = 80
                         #esp2.write([respuesta])
@@ -137,23 +122,16 @@ def run() -> None:
                         break
 
                     elif material.material == "fondo" and  material.score >= 50:
-                        nombre_imagen = nombre_imagen + material.material
-                        nombre_imagen = nombre_imagen + "_"
-                        nombre_imagen += str(random.randint(0,10000))
-                        cv2.imwrite(ruta_fondo+""+nombre_imagen+".jpg",image)
-                        nombre_imagen = ""                        
-                        fondo = fondo + 1
+                        saveImage(material.material,image)                     
+                        fondo += 1
                         print(material.material)
                         respuesta = 70
                         #esp2.write([respuesta])
                         #esp.write([respuesta])
                         respuesta = 0
                     else:
-                        nombre_imagen += "desconocido_"
-                        nombre_imagen += str(random.randint(0,10000))
-                        cv2.imwrite(ruta_desconocido+""+nombre_imagen+".jpg",image)
-                        nombre_imagen = ""
-                        print("Desconocido")
+                        saveImage("desconocido",image)
+                        print("desconocido")
                         break
 
                 if IA_STATUS_OFF:
