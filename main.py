@@ -78,7 +78,7 @@ def run() -> None:
             cap = cv2.VideoCapture(0)
             cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
             cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-            respuesta = 0
+            respuesta = ''
             try:
                 while cap.isOpened():
                             
@@ -104,31 +104,29 @@ def run() -> None:
                         if material.material == "aluminio" and material.score >= 60:
                             saveImage(material.material,image) 
                             aluminio+=1
-                            respuesta = 65
-                            esp_servos.write([respuesta])
-                            esp_nextion.write([respuesta])
-                            respuesta = 0
+                            respuesta = 'A'+str(aluminio)
+                            esp_servos.write(respuesta.encode(encoding='UTF-8',errors='strict'))
+                            esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
+                            respuesta = ''
                             print(material.material)
                             break
 
                         elif material.material == "hojalata" and  material.score >= 60:
                             saveImage(material.material,image)
                             hojalata +=1
-                            fondo = 0
-                            respuesta = 72
-                            esp_servos.write([respuesta])
-                            esp_nextion.write([respuesta])
-                            respuesta = 0
+                            respuesta = 'H'+str(hojalata)
+                            esp_servos.write(respuesta.encode(encoding='UTF-8',errors='strict'))
+                            esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))                            
+                            respuesta = ''
                             print(material.material)
                             break
                         elif material.material == "plastico" and  material.score >= 60:
                             saveImage(material.material,image)
                             plastico += 1
-                            fondo = 0
-                            respuesta = 80
-                            esp_servos.write([respuesta])
-                            esp_nextion.write([respuesta])
-                            respuesta = 0
+                            respuesta = 'A'+str(plastico)
+                            esp_servos.write(respuesta.encode(encoding='UTF-8',errors='strict'))
+                            esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
+                            respuesta = ''
                             print(material.material)
                             break
 
@@ -173,8 +171,7 @@ def readContainers() -> None:
                             break
                         operacion = operacion + esp_leido[x]
             print(operacion)
-            
-            esp_nextion.write(operacion.encode(encoding='UTF-8',errors='strict'))
+            # esp_nextion.write(operacion.encode(encoding='UTF-8',errors='strict'))
         except:
             logging.error("Alguna ESP esta mal conectada")
             #Mando error
