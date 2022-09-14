@@ -23,6 +23,7 @@ BTN_CLOSE = 27
 try:
     esp_nextion = serial.Serial('/dev/ttyUSB0',115200)
     esp_contenedores = serial.Serial('/dev/ttyUSB1',115200)
+    esp_servos = serial.Serial('/dev/ttyUSB2',115200)
     logging.info("Las conexiones son correctas")
 except:
     logging.error("Esp32 Desconectada")
@@ -104,8 +105,8 @@ def run() -> None:
                             saveImage(material.material,image) 
                             aluminio+=1
                             respuesta = 65
-                            #esp2.write([respuesta])
-                            #esp.write([respuesta])
+                            esp_servos.write([respuesta])
+                            esp_nextion.write([respuesta])
                             respuesta = 0
                             print(material.material)
                             break
@@ -115,8 +116,8 @@ def run() -> None:
                             hojalata +=1
                             fondo = 0
                             respuesta = 72
-                            #esp2.write([respuesta])
-                            #esp.write([respuesta])
+                            esp_servos.write([respuesta])
+                            esp_nextion.write([respuesta])
                             respuesta = 0
                             print(material.material)
                             break
@@ -125,8 +126,8 @@ def run() -> None:
                             plastico += 1
                             fondo = 0
                             respuesta = 80
-                            #esp2.write([respuesta])
-                            #esp.write([respuesta])
+                            esp_servos.write([respuesta])
+                            esp_nextion.write([respuesta])
                             respuesta = 0
                             print(material.material)
                             break
@@ -136,8 +137,8 @@ def run() -> None:
                             fondo += 1
                             print(material.material)
                             respuesta = 70
-                            #esp2.write([respuesta])
-                            #esp.write([respuesta])
+                            esp_servos.write([respuesta])
+                            esp_nextion.write([respuesta])
                             respuesta = 0
                         else:
                             saveImage("desconocido",image)
