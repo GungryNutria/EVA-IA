@@ -22,8 +22,8 @@ BTN_CLOSE = 27
 
 try:
     esp_nextion = serial.Serial('/dev/ttyUSB0',115200)
-    esp_contenedores = serial.Serial('/dev/ttyUSB1',115200)
-    esp_servos = serial.Serial('/dev/ttyUSB2',115200)
+    # esp_contenedores = serial.Serial('/dev/ttyUSB1',115200)
+    esp_servos = serial.Serial('/dev/ttyUSB1',115200)
     logging.info("Las conexiones son correctas")
 except:
     logging.error("Esp32 Desconectada")
@@ -79,6 +79,7 @@ def run() -> None:
             cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
             cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
             respuesta = ''
+            asci = ''
             try:
                 while cap.isOpened():
                             
@@ -102,45 +103,59 @@ def run() -> None:
                                     
                     for material in materiales:
                         if material.material == "aluminio" and material.score >= 60:
-                            saveImage(material.material,image) 
+                            # saveImage(material.material,image) 
                             aluminio+=1
-                            respuesta = 'A'+str(aluminio)
-                            esp_servos.write(respuesta.encode(encoding='UTF-8',errors='strict'))
-                            esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
-                            respuesta = ''
+                            asci=65
+                            # respuesta = 'A'+str(aluminio)
+                            esp_servos.write([asci])
+                            # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
+                            asci = 0
+                            # respuesta = ''
                             print(material.material)
                             break
 
                         elif material.material == "hojalata" and  material.score >= 60:
-                            saveImage(material.material,image)
+                            # saveImage(material.material,image)
                             hojalata +=1
-                            respuesta = 'H'+str(hojalata)
-                            esp_servos.write(respuesta.encode(encoding='UTF-8',errors='strict'))
-                            esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))                            
-                            respuesta = ''
+                            asci = 72
+                            # respuesta = 'H'+str(hojalata)
+                            esp_servos.write([asci])
+                            # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))                            
+                            # respuesta = ''
+                            asci = 0
                             print(material.material)
                             break
                         elif material.material == "plastico" and  material.score >= 60:
-                            saveImage(material.material,image)
+                            # saveImage(material.material,image)
                             plastico += 1
-                            respuesta = 'A'+str(plastico)
-                            esp_servos.write(respuesta.encode(encoding='UTF-8',errors='strict'))
-                            esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
-                            respuesta = ''
+                            asci = 80
+                            # respuesta = 'P'+str(plastico)
+                            esp_servos.write([asci])
+                            # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
+                            # respuesta = ''
+                            asci = 0
                             print(material.material)
                             break
 
                         elif material.material == "fondo" and  material.score >= 50:
-                            saveImage(material.material,image)                     
+                            # saveImage(material.material,image)                     
                             fondo += 1
                             print(material.material)
-                            respuesta = 70
-                            esp_servos.write([respuesta])
-                            esp_nextion.write([respuesta])
-                            respuesta = 0
+                            asci=65
+                            # respuesta = 'A'+str(aluminio)
+                            esp_servos.write([asci])
+                            # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
+                            asci = 0
+                            break
                         else:
-                            saveImage("desconocido",image)
-                            print("desconocido")
+                            # saveImage("desconocido",image)
+                            print('desconocido')
+                            asci = 80
+                            # respuesta = 'P'+str(plastico)
+                            esp_servos.write([asci])
+                            # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
+                            # respuesta = ''
+                            asci = 0
                             break
 
                     if IA_STATUS_OFF:
@@ -180,10 +195,10 @@ def readContainers() -> None:
 def main():
     # run()
     ia = threading.Thread(target=run)
-    containers = threading.Thread(target=readContainers)
+    # containers = threading.Thread(target=readContainers)
     
     ia.start()
-    containers.start()
+    # containers.start()
 
 if __name__ == '__main__':
     main()
