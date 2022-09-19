@@ -20,10 +20,11 @@ logging.basicConfig(filename='eva.log', filemode='w', format='%(name)s - %(level
 BTN_START = 17
 BTN_CLOSE = 27
 
+
 try:
-    esp_nextion = serial.Serial('/dev/ttyUSB0',115200)
-    # esp_contenedores = serial.Serial('/dev/ttyUSB1',115200)
-    esp_servos = serial.Serial('/dev/ttyUSB1',115200)
+    esp_nextion = serial.Serial('/dev/ttyUSB1',115200)
+    esp_bandas = serial.Serial('/dev/ttyUSB2',115200)
+    esp_servos = serial.Serial('/dev/ttyUSB3',115200)
     logging.info("Las conexiones son correctas")
 except:
     logging.error("Esp32 Desconectada")
@@ -44,6 +45,7 @@ def saveImage(material,path):
 
 
 def run() -> None:
+    bandas = ''
     aluminio = 0
     plastico = 0
     hojalata = 0
@@ -70,9 +72,11 @@ def run() -> None:
     while True:
 
         IA_STATUS_ON = gpio.input(BTN_START)        
-
+        
         while IA_STATUS_ON:
-                
+            bandas = 65
+            esp_bandas.write([bandas])
+            bandas = 0
             IA_STATUS_OFF = gpio.input(BTN_CLOSE)
                 
             cap = cv2.VideoCapture(0)
@@ -107,7 +111,7 @@ def run() -> None:
                             aluminio+=1
                             asci=65
                             # respuesta = 'A'+str(aluminio)
-                            esp_servos.write([asci])
+                            # esp_servos.write([asci])
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             asci = 0
                             # respuesta = ''
@@ -119,7 +123,7 @@ def run() -> None:
                             hojalata +=1
                             asci = 72
                             # respuesta = 'H'+str(hojalata)
-                            esp_servos.write([asci])
+                            # esp_servos.write([asci])
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))                            
                             # respuesta = ''
                             asci = 0
@@ -130,7 +134,7 @@ def run() -> None:
                             plastico += 1
                             asci = 80
                             # respuesta = 'P'+str(plastico)
-                            esp_servos.write([asci])
+                            # esp_servos.write([asci])
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             # respuesta = ''
                             asci = 0
@@ -152,14 +156,18 @@ def run() -> None:
                             print('desconocido')
                             asci = 80
                             # respuesta = 'P'+str(plastico)
-                            esp_servos.write([asci])
+                            # esp_servos.write([asci])
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             # respuesta = ''
                             asci = 0
                             break
 
                     if IA_STATUS_OFF:
+                        
+                        bandas = 80
                         IA_STATUS_ON = False
+                        esp_servos.bandas([bandas])
+                        bandas = 0
 
                     cap.release()
                     cv2.waitKey(0) # waits until a key is pressed
@@ -171,6 +179,11 @@ def run() -> None:
         while IA_STATUS_OFF:
             print('RETIRE TARJETA')
             IA_STATUS_OFF = False
+            bandas = 80
+            esp_servos.write([bandas])
+            bandas = 0
+            
+            
     
             
 def readContainers() -> None:
