@@ -20,6 +20,21 @@ logging.basicConfig(filename='eva.log', filemode='w', format='%(name)s - %(level
 BTN_START = 17
 BTN_CLOSE = 27
 
+FOTO_PLASTICO = 16
+FOTO_ALUMINIO = 20
+FOTO_HOJALATA = 21
+
+procesos = []
+materiales = []
+bandas = ''
+asci = ''
+aluminio = 0
+plastico = 0
+hojalata = 0
+fondo = 0
+
+
+
 
 try:
     esp_nextion = serial.Serial('/dev/ttyUSB1',115200)
@@ -40,21 +55,13 @@ def saveImage(material,path):
             cv2.imwrite(ruta,path)
     except:
         logging.error("No se pudo generar la imagen")
-        
-
-
 
 def run() -> None:
-    bandas = ''
-    aluminio = 0
-    plastico = 0
-    hojalata = 0
-    fondo = 0
-    gpio.setmode(gpio.BCM)
+    global bandas, aluminio, plastico, hojalata, fondo, procesos, material, asci
 
     gpio.setup( BTN_START , gpio.IN)
     gpio.setup( BTN_CLOSE , gpio.IN)
-        
+    
     # Initialize the image classification model
     base_options = core.BaseOptions(file_name='model.tflite', use_coral=False, num_threads=4)
         
@@ -77,16 +84,16 @@ def run() -> None:
             bandas = 65
             esp_bandas.write([bandas])
             bandas = 0
+
             IA_STATUS_OFF = gpio.input(BTN_CLOSE)
                 
             cap = cv2.VideoCapture(0)
             cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
             cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-            respuesta = ''
-            asci = ''
+           
             try:
                 while cap.isOpened():
-                            
+                    
                     # Start capturing video input from the camera     
                     success,image = cap.read()
                             
@@ -98,7 +105,6 @@ def run() -> None:
                     tensor_image = vision.TensorImage.create_from_array(rgb_image)
                     # List classification results
                     categories = classifier.classify(tensor_image)
-                    materiales = []
                                     
                     for idx, category in enumerate(categories.classifications[0].categories):
                         category_name = category.category_name
@@ -109,11 +115,10 @@ def run() -> None:
                         if material.material == "aluminio" and material.score >= 60:
                             # saveImage(material.material,image) 
                             aluminio+=1
-                            asci=65
+                            procesos.append(65)
                             # respuesta = 'A'+str(aluminio)
                             # esp_servos.write([asci])
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
-                            asci = 0
                             # respuesta = ''
                             print(material.material)
                             break
@@ -121,23 +126,21 @@ def run() -> None:
                         elif material.material == "hojalata" and  material.score >= 60:
                             # saveImage(material.material,image)
                             hojalata +=1
-                            asci = 72
+                            procesos.append(72)
                             # respuesta = 'H'+str(hojalata)
                             # esp_servos.write([asci])
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))                            
                             # respuesta = ''
-                            asci = 0
                             print(material.material)
                             break
                         elif material.material == "plastico" and  material.score >= 60:
                             # saveImage(material.material,image)
                             plastico += 1
-                            asci = 80
+                            procesos.append(80)
                             # respuesta = 'P'+str(plastico)
                             # esp_servos.write([asci])
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             # respuesta = ''
-                            asci = 0
                             print(material.material)
                             break
 
@@ -145,25 +148,23 @@ def run() -> None:
                             # saveImage(material.material,image)                     
                             fondo += 1
                             print(material.material)
-                            asci=65
+                            procesos.append(65)
                             # respuesta = 'A'+str(aluminio)
-                            esp_servos.write([asci])
+                            # esp_servos.write([asci])
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
-                            asci = 0
                             break
                         else:
                             # saveImage("desconocido",image)
                             print('desconocido')
-                            asci = 80
+                            # asci = 80
                             # respuesta = 'P'+str(plastico)
                             # esp_servos.write([asci])
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             # respuesta = ''
-                            asci = 0
+                            # asci = 0
                             break
 
                     if IA_STATUS_OFF:
-                        
                         bandas = 80
                         IA_STATUS_ON = False
                         esp_servos.bandas([bandas])
@@ -175,17 +176,15 @@ def run() -> None:
                     time.sleep(2)
             except:
                 logging.error("No se pudo prender la camara")
-                #Mando Error de que la camara no funciona    
+                #Mando Error de que la camara no funciona
+
         while IA_STATUS_OFF:
             print('RETIRE TARJETA')
-            IA_STATUS_OFF = False
             bandas = 80
             esp_servos.write([bandas])
-            bandas = 0
-            
-            
-    
-            
+            bandas = 0   
+            IA_STATUS_OFF = False               
+       
 def readContainers() -> None:
     while True:
         try:
@@ -203,14 +202,56 @@ def readContainers() -> None:
         except:
             logging.error("Alguna ESP esta mal conectada")
             #Mando error
-        
+
+def moveServos() -> None:
+    gpio.setup(FOTO_PLASTICO, gpio.IN)
+    gpio.setup(FOTO_ALUMINIO, gpio.IN)
+    gpio.setup(FOTO_HOJALATA, gpio.IN)
+
+    global procesos
+    bandera = 0
+
+    while True:
+        if gpio.input(FOTO_PLASTICO):
+            for i in len(procesos):
+                if procesos[i] == 80:
+                    esp_servos.write([procesos[i]])
+                    bandera = i
+                    break
+        elif gpio.input(FOTO_ALUMINIO):
+            for i in len(procesos):
+                if procesos[i] == 65:
+                    esp_servos.write([procesos[i]])
+                    bandera = i
+                    break
+        elif gpio.input(FOTO_HOJALATA):
+            for i in len(procesos):
+                if procesos[i] == 72:
+                    esp_servos.write([procesos[i]])
+                    bandera = i
+                    break
+        else:
+            bandera = 0
+            print('Esperando respuesta')
+
+        for j in range(bandera,len(procesos)):
+            if procesos[j] == None:
+                bandera = 0
+                break
+            else:
+                procesos[j] = procesos[j+1]
+            
+            
     
 def main():
     # run()
+    gpio.setmode(gpio.BCM)
     ia = threading.Thread(target=run)
+    servos = threading.Thread(target=moveServos)
     # containers = threading.Thread(target=readContainers)
     
     ia.start()
+    servos.start()
     # containers.start()
 
 if __name__ == '__main__':
