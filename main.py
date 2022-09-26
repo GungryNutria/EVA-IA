@@ -109,90 +109,42 @@ def run() -> None:
                     categories = classifier.classify(tensor_image)
                                     
                     for idx, category in enumerate(categories.classifications[0].categories):
+
                         score = round(category.score, 2) * 100
+
                         if category.category_name == 'aluminio' and score >= 60:
                             aluminio+=1
                             procesos.append(65)
+                            # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print(category.category_name + ': ' + str(aluminio)+': '+ str(score) +'%')
                             break
                         elif category.category_name == 'plastico' and score >= 60:
                             aluminio+=1
                             procesos.append(72)
+                            # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print(category.category_name + ': ' + str(plastico)+': '+ str(score) +'%')
                             break
                         elif category.category_name == 'hojalata' and score >= 60:
                             aluminio+=1
                             procesos.append(80)
+                            # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print(category.category_name + ': ' + str(hojalata)+': '+ str(score) +'%')
                             break
                         elif category.category_name == 'fondo' and score >= 60:
                             aluminio+=1
                             procesos.append(65)
+                            # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print(category.category_name + ': ' + str(fondo)+': '+ str(score) +'%')
                             break
                         else:
                             desconocido+=1
                             procesos.append(68)
                             print('desconocido: '+str(desconocido))
-
-                                    
-                    for material in materiales:
-                        if material.material == "aluminio" and material.score >= 60:
-                            # saveImage(material.material,image) 
-                            aluminio+=1
-                            procesos.append(65)
-                            # respuesta = 'A'+str(aluminio)
-                            # esp_servos.write([asci])
-                            # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
-                            # respuesta = ''
-                            print(material.material)
-                            break
-
-                        elif material.material == "hojalata" and  material.score >= 60:
-                            # saveImage(material.material,image)
-                            hojalata +=1
-                            procesos.append(72)
-                            # respuesta = 'H'+str(hojalata)
-                            # esp_servos.write([asci])
-                            # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))                            
-                            # respuesta = ''
-                            print(material.material)
-                            break
-                        elif material.material == "plastico" and  material.score >= 60:
-                            # saveImage(material.material,image)
-                            plastico += 1
-                            procesos.append(80)
-                            # respuesta = 'P'+str(plastico)
-                            # esp_servos.write([asci])
-                            # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
-                            # respuesta = ''
-                            print(material.material)
-                            break
-
-                        elif material.material == "fondo" and  material.score >= 50:
-                            # saveImage(material.material,image)                     
-                            fondo += 1
-                            print(material.material)
-                            procesos.append(65)
-                            # respuesta = 'A'+str(aluminio)
-                            # esp_servos.write([asci])
-                            # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
-                            break
-                        else:
-                            
-                            # saveImage("desconocido",image)
-                            print('desconocido')
-                            # asci = 80
-                            # respuesta = 'P'+str(plastico)
-                            # esp_servos.write([asci])
-                            # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
-                            # respuesta = ''
-                            # asci = 0
                             break
 
                     if IA_STATUS_OFF:
-                        bandas = 80
                         IA_STATUS_ON = False
+                        bandas = 80
                         esp_servos.bandas([bandas])
                         bandas = 0
 
