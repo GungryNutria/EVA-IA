@@ -31,6 +31,7 @@ asci = ''
 aluminio = 0
 plastico = 0
 hojalata = 0
+desconocido = 0
 fondo = 0
 
 
@@ -40,6 +41,7 @@ try:
     esp_nextion = serial.Serial('/dev/ttyUSB1',115200)
     esp_bandas = serial.Serial('/dev/ttyUSB2',115200)
     esp_servos = serial.Serial('/dev/ttyUSB3',115200)
+    
     logging.info("Las conexiones son correctas")
 except:
     logging.error("Esp32 Desconectada")
@@ -93,10 +95,10 @@ def run() -> None:
            
             try:
                 while cap.isOpened():
-                    
+
                     # Start capturing video input from the camera     
                     success,image = cap.read()
-                            
+
                     if not success:
                         sys.exit('ERROR: Unable to read from webcam. Please verify your webcam settings.')
                         
@@ -107,9 +109,32 @@ def run() -> None:
                     categories = classifier.classify(tensor_image)
                                     
                     for idx, category in enumerate(categories.classifications[0].categories):
-                        category_name = category.category_name
                         score = round(category.score, 2) * 100
-                        materiales.append(m.Material(category_name,score))
+                        if category.category_name == 'aluminio' and score >= 60:
+                            aluminio+=1
+                            procesos.append(65)
+                            print(category.category_name + ': ' + str(aluminio)+': '+ str(score) +'%')
+                            break
+                        elif category.category_name == 'plastico' and score >= 60:
+                            aluminio+=1
+                            procesos.append(72)
+                            print(category.category_name + ': ' + str(plastico)+': '+ str(score) +'%')
+                            break
+                        elif category.category_name == 'hojalata' and score >= 60:
+                            aluminio+=1
+                            procesos.append(80)
+                            print(category.category_name + ': ' + str(hojalata)+': '+ str(score) +'%')
+                            break
+                        elif category.category_name == 'fondo' and score >= 60:
+                            aluminio+=1
+                            procesos.append(65)
+                            print(category.category_name + ': ' + str(fondo)+': '+ str(score) +'%')
+                            break
+                        else:
+                            desconocido+=1
+                            procesos.append(68)
+                            print('desconocido: '+str(desconocido))
+
                                     
                     for material in materiales:
                         if material.material == "aluminio" and material.score >= 60:
@@ -154,6 +179,7 @@ def run() -> None:
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             break
                         else:
+                            
                             # saveImage("desconocido",image)
                             print('desconocido')
                             # asci = 80
@@ -235,11 +261,11 @@ def moveServos() -> None:
             print('Esperando respuesta')
 
         for j in range(bandera,len(procesos)):
-            if procesos[j] == None:
+            if procesos[j]:
+                procesos[j] = procesos[j+1]
+            else:
                 bandera = 0
                 break
-            else:
-                procesos[j] = procesos[j+1]
             
             
     
