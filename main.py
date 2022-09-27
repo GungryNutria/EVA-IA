@@ -119,19 +119,19 @@ def run() -> None:
                             print(category.category_name + ': ' + str(aluminio)+': '+ str(score) +'%')
                             break
                         elif category.category_name == 'plastico' and score >= 60:
-                            aluminio+=1
+                            plastico+=1
                             procesos.append(72)
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print(category.category_name + ': ' + str(plastico)+': '+ str(score) +'%')
                             break
                         elif category.category_name == 'hojalata' and score >= 60:
-                            aluminio+=1
+                            hojalata+=1
                             procesos.append(80)
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print(category.category_name + ': ' + str(hojalata)+': '+ str(score) +'%')
                             break
                         elif category.category_name == 'fondo' and score >= 60:
-                            aluminio+=1
+                            fondo+=1
                             procesos.append(65)
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print(category.category_name + ': ' + str(fondo)+': '+ str(score) +'%')
@@ -191,19 +191,19 @@ def moveServos() -> None:
 
     while True:
         if gpio.input(FOTO_PLASTICO):
-            for i in len(procesos):
+            for i in range(0,len(procesos)):
                 if procesos[i] == 80:
                     esp_servos.write([procesos[i]])
                     bandera = i
                     break
         elif gpio.input(FOTO_ALUMINIO):
-            for i in len(procesos):
+            for i in range(0,len(procesos)):
                 if procesos[i] == 65:
                     esp_servos.write([procesos[i]])
                     bandera = i
                     break
         elif gpio.input(FOTO_HOJALATA):
-            for i in len(procesos):
+            for i in range(0,len(procesos)):
                 if procesos[i] == 72:
                     esp_servos.write([procesos[i]])
                     bandera = i
