@@ -1,4 +1,3 @@
-
 from multiprocessing.pool import RUN
 import sys
 import time
@@ -208,16 +207,18 @@ def moveServos() -> None:
                     esp_servos.write([procesos[i]])
                     bandera = i
                     break
+        elif bandera > 0:
+            for j in range(bandera,len(procesos)):
+                if procesos[j]:
+                    procesos[j] = procesos[j+1]
+                else:
+                    bandera = 0
+                    break
         else:
             bandera = 0
             print('Esperando respuesta')
 
-        for j in range(bandera,len(procesos)):
-            if procesos[j]:
-                procesos[j] = procesos[j+1]
-            else:
-                bandera = 0
-                break
+        
             
             
     
