@@ -25,7 +25,7 @@ FOTO_HOJALATA = 21
 
 procesos = []
 materiales = []
-bandas = ''
+
 asci = ''
 aluminio = 0
 plastico = 0
@@ -61,8 +61,8 @@ def saveImage(material,path):
         logging.error("No se pudo generar la imagen")
 
 def run() -> None:
-    global bandas, aluminio, plastico, hojalata, fondo, procesos, material, asci
-
+    global aluminio, plastico, hojalata, fondo, procesos, material, asci
+    bandas = ''
     gpio.setup( BTN_START , gpio.IN)
     gpio.setup( BTN_CLOSE , gpio.IN)
     
