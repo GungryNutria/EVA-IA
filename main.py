@@ -37,12 +37,12 @@ fondo = 0
 
 
 try:
-    esp_nextion = serial.Serial('/dev/ttyUSB4',115200)
-    esp_servos = serial.Serial('/dev/ttyUSB2',115200)
-    esp_bandas = serial.Serial('/dev/ttyUSB0',115200)
-    esp_celdas = serial.Serial('/dev/ttyUSB5',115200)
-    esp_ultras = serial.Serial('/dev/ttyUSB3',115200)
-    esp_errores = serial.Serial('/dev/ttyUSB1',115200)
+    esp_nextion = serial.Serial('/dev/ttyUSB0',115200)
+    esp_servos = serial.Serial('/dev/ttyUSB1',115200)
+    esp_bandas = serial.Serial('/dev/ttyUSB2',115200)
+    esp_celdas = serial.Serial('/dev/ttyUSB3',115200)
+    esp_ultras = serial.Serial('/dev/ttyUSB4',115200)
+    esp_errores = serial.Serial('/dev/ttyUSB5',115200)
     
     logging.info("Las conexiones son correctas")
 except:
