@@ -37,26 +37,26 @@ fondo = 0
 
 
 try:
-    esp_nextion = serial.Serial('/dev/ttyUSB2',115200)
-    esp_servos = serial.Serial('/dev/ttyUSB5',115200)
+    esp_nextion = serial.Serial('/dev/ttyUSB0',115200)
+    esp_servos = serial.Serial('/dev/ttyUSB2',115200)
     esp_bandas = serial.Serial('/dev/ttyUSB1',115200)
-    esp_celdas = serial.Serial('/dev/ttyUSB4',115200)
-    esp_ultras = serial.Serial('/dev/ttyUSB0',115200)
-    esp_errores = serial.Serial('/dev/ttyUSB3',115200)
+    #esp_celdas = serial.Serial('/dev/ttyUSB4',115200)
+    #esp_ultras = serial.Serial('/dev/ttyUSB0',115200)
+    #esp_errores = serial.Serial('/dev/ttyUSB3',115200)
     
     logging.info("Las conexiones son correctas")
 except:
     logging.error("Esp32 Desconectada")
     # mando error a el servidor
 
-def saveImage(material,path):
+def saveImage(material):
     try:
         image_id = str(random.randint(0,10000))
         ruta = "materiales/{}/{}_{}.jpg".format(material,material,image_id)
         if exists(ruta):
-            saveImage(material,path)
+            return saveImage(material)
         else:
-            cv2.imwrite(ruta,path)
+            return ruta
     except:
         logging.error("No se pudo generar la imagen")
 
@@ -80,7 +80,7 @@ def run() -> None:
     IA_STATUS_OFF = False
         
     while True:
-        bandas = ''
+        bandas = 0
         IA_STATUS_ON = gpio.input(BTN_START)        
         
         while IA_STATUS_ON:
@@ -114,30 +114,35 @@ def run() -> None:
                         score = round(category.score, 2) * 100
 
                         if category.category_name == 'aluminio' and score >= 60:
+                            cv2.imwrite(saveImage('aluminio'),image)
                             aluminio+=1
                             procesos.append(65)
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print(category.category_name + ': ' + str(aluminio)+': '+ str(score) +'%')
                             break
                         elif category.category_name == 'plastico' and score >= 60:
+                            cv2.imwrite(saveImage('plastico'),image)
                             plastico+=1
                             procesos.append(72)
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print(category.category_name + ': ' + str(plastico)+': '+ str(score) +'%')
                             break
                         elif category.category_name == 'hojalata' and score >= 60:
+                            cv2.imwrite(saveImage('hojalata'),image)
                             hojalata+=1
                             procesos.append(80)
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print(category.category_name + ': ' + str(hojalata)+': '+ str(score) +'%')
                             break
                         elif category.category_name == 'fondo' and score >= 60:
+                            cv2.imwrite(saveImage('fondo'),image)
                             fondo+=1
                             procesos.append(65)
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print(category.category_name + ': ' + str(fondo)+': '+ str(score) +'%')
                             break
                         else:
+                            cv2.imwrite(saveImage('desconocido'),image)
                             desconocido+=1
                             procesos.append(68)
                             print('desconocido: '+str(desconocido))
@@ -152,7 +157,7 @@ def run() -> None:
                     cap.release()
                     cv2.waitKey(0) # waits until a key is pressed
                     cv2.destroyAllWindows()
-                    time.sleep(2)
+                    time.sleep(1)
             except:
                 logging.error("No se pudo prender la camara")
                 #Mando Error de que la camara no funciona
@@ -192,24 +197,28 @@ def moveServos() -> None:
 
     while True:
         if gpio.input(FOTO_PLASTICO):
+            print("Detecto Plastico")
             for i in range(0,len(procesos)):
                 if procesos[i] == 80:
                     esp_servos.write([procesos[i]])
                     bandera = i
                     break
         elif gpio.input(FOTO_ALUMINIO):
+            print("Detecto Aluminio")
             for i in range(0,len(procesos)):
                 if procesos[i] == 65:
                     esp_servos.write([procesos[i]])
                     bandera = i
                     break
         elif gpio.input(FOTO_HOJALATA):
+            print("Detecto Hojalata")
             for i in range(0,len(procesos)):
                 if procesos[i] == 72:
                     esp_servos.write([procesos[i]])
                     bandera = i
                     break
         elif bandera > 0:
+            print("Acomodando lista")
             for j in range(bandera,len(procesos)):
                 if procesos[j]:
                     procesos[j] = procesos[j+1]
