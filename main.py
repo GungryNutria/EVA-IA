@@ -151,7 +151,7 @@ def run() -> None:
                     if IA_STATUS_OFF:
                         IA_STATUS_ON = False
                         bandas = 80
-                        esp_servos.bandas([bandas])
+                        esp_bandas.write([bandas])
                         bandas = 0
 
                     cap.release()
@@ -165,7 +165,7 @@ def run() -> None:
         while IA_STATUS_OFF:
             print('RETIRE TARJETA')
             bandas = 80
-            esp_servos.write([bandas])
+            esp_bandas.write([bandas])
             bandas = 0   
             IA_STATUS_OFF = False               
        
@@ -195,31 +195,27 @@ def moveServos() -> None:
 
     global procesos
     bandera = 0
-
+    print('Esperando respuesta')
     while True:
         if gpio.input(FOTO_PLASTICO) and len(procesos) > 0:
-            print("Detecto Plastico")
             for i in range(0,len(procesos)):
                 if procesos[i] == 80:
                     esp_servos.write([procesos[i]])
                     bandera = i
                     break
         elif gpio.input(FOTO_ALUMINIO) and len(procesos) > 0:
-            print("Detecto Aluminio")
             for i in range(0,len(procesos)):
                 if procesos[i] == 65:
                     esp_servos.write([procesos[i]])
                     bandera = i
                     break
         elif gpio.input(FOTO_HOJALATA) and len(procesos) > 0:
-            print("Detecto Hojalata")
             for i in range(0,len(procesos)):
                 if procesos[i] == 72:
                     esp_servos.write([procesos[i]])
                     bandera = i
                     break
         elif bandera > 0:
-            print("Acomodando lista")
             for j in range(bandera,len(procesos)):
                 if procesos[j]:
                     procesos[j] = procesos[j+1]
@@ -228,8 +224,6 @@ def moveServos() -> None:
                     break
         else:
             bandera = 0
-            print('Esperando respuesta')
-
         
             
             
