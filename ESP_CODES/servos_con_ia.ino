@@ -78,7 +78,9 @@ void loop() {
     // Devolvemos el servo a su estado de origen
     servoC.write(1);
   }
+
   if(Serial.available()){servo = Serial.read()}
+  
   switch(material){
     // Si la IA devuelve una P se movera el servo A
     case 'P':

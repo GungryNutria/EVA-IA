@@ -188,6 +188,7 @@ def readContainers() -> None:
             #Mando error
 
 def moveServos() -> None:
+
     gpio.setup(FOTO_PLASTICO, gpio.IN)
     gpio.setup(FOTO_ALUMINIO, gpio.IN)
     gpio.setup(FOTO_HOJALATA, gpio.IN)
@@ -196,21 +197,21 @@ def moveServos() -> None:
     bandera = 0
 
     while True:
-        if gpio.input(FOTO_PLASTICO):
+        if gpio.input(FOTO_PLASTICO) and len(procesos) > 0:
             print("Detecto Plastico")
             for i in range(0,len(procesos)):
                 if procesos[i] == 80:
                     esp_servos.write([procesos[i]])
                     bandera = i
                     break
-        elif gpio.input(FOTO_ALUMINIO):
+        elif gpio.input(FOTO_ALUMINIO) and len(procesos) > 0:
             print("Detecto Aluminio")
             for i in range(0,len(procesos)):
                 if procesos[i] == 65:
                     esp_servos.write([procesos[i]])
                     bandera = i
                     break
-        elif gpio.input(FOTO_HOJALATA):
+        elif gpio.input(FOTO_HOJALATA) and len(procesos) > 0:
             print("Detecto Hojalata")
             for i in range(0,len(procesos)):
                 if procesos[i] == 72:
