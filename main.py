@@ -62,7 +62,6 @@ def saveImage(material,path):
 
 def run() -> None:
     global aluminio, plastico, hojalata, fondo, procesos, material, asci
-    bandas = ''
     gpio.setup( BTN_START , gpio.IN)
     gpio.setup( BTN_CLOSE , gpio.IN)
     
@@ -81,7 +80,7 @@ def run() -> None:
     IA_STATUS_OFF = False
         
     while True:
-
+        bandas = ''
         IA_STATUS_ON = gpio.input(BTN_START)        
         
         while IA_STATUS_ON:
