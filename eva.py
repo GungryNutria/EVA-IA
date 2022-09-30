@@ -134,12 +134,12 @@ def run() -> None:
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print(category.category_name + ': ' + str(hojalata)+': '+ str(score) +'%')
                             break
-                        else:
-                            cv2.imwrite(saveImage('desconocido'),image)
-                            desconocido+=1
-                            procesos.append(68)
-                            print('desconocido: '+str(desconocido))
-                            break
+                        #else:
+                            #cv2.imwrite(saveImage('desconocido'),image)
+                            #desconocido+=1
+                            #procesos.append(68)
+                            #print('desconocido: '+str(desconocido))
+                            #break
 
                     if IA_STATUS_OFF:
                         IA_STATUS_ON = False
