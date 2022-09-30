@@ -38,8 +38,8 @@ fondo = 0
 
 try:
     esp_nextion = serial.Serial('/dev/ttyUSB0',115200)
-    esp_servos = serial.Serial('/dev/ttyUSB2',115200)
-    esp_bandas = serial.Serial('/dev/ttyUSB1',115200)
+    #esp_servos = serial.Serial('/dev/ttyUSB2',115200)
+    #esp_bandas = serial.Serial('/dev/ttyUSB1',115200)
     #esp_celdas = serial.Serial('/dev/ttyUSB4',115200)
     #esp_ultras = serial.Serial('/dev/ttyUSB0',115200)
     #esp_errores = serial.Serial('/dev/ttyUSB3',115200)
@@ -85,7 +85,7 @@ def run() -> None:
         
         while IA_STATUS_ON:
             bandas = 65
-            esp_bandas.write([bandas])
+            #esp_bandas.write([bandas])
             bandas = 0
             IA_STATUS_OFF = gpio.input(BTN_CLOSE)
                 
@@ -143,7 +143,7 @@ def run() -> None:
                     if IA_STATUS_OFF:
                         IA_STATUS_ON = False
                         bandas = 80
-                        esp_bandas.write([bandas])
+                        #esp_bandas.write([bandas])
                         bandas = 0
 
                     cap.release()
@@ -157,7 +157,7 @@ def run() -> None:
         while IA_STATUS_OFF:
             print('RETIRE TARJETA')
             bandas = 80
-            esp_bandas.write([bandas])
+            #esp_bandas.write([bandas])
             bandas = 0   
             IA_STATUS_OFF = False               
        
@@ -224,11 +224,11 @@ def main():
     # run()
     gpio.setmode(gpio.BCM)
     ia = threading.Thread(target=run)
-    servos = threading.Thread(target=moveServos)
+    #servos = threading.Thread(target=moveServos)
     # containers = threading.Thread(target=readContainers)
     
     ia.start()
-    servos.start()
+    #servos.start()
     # containers.start()
 
 if __name__ == '__main__':
