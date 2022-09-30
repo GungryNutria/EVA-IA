@@ -87,18 +87,14 @@ def run() -> None:
             bandas = 65
             esp_bandas.write([bandas])
             bandas = 0
-            time.sleep(1);
-            bandas = 80
-            esp_bandas.write([bandas])
-            bandas = 0
             IA_STATUS_OFF = gpio.input(BTN_CLOSE)
                 
-            cap = cv2.VideoCapture(0)
-            cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-            cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
            
             try:
                 while cap.isOpened():
+                    cap = cv2.VideoCapture(0)
+                    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+                    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
                     # Start capturing video input from the camera     
                     success,image = cap.read()
