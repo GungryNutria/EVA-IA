@@ -32,6 +32,7 @@ plastico = 0
 hojalata = 0
 desconocido = 0
 fondo = 0
+bandas = 0
 
 
 
@@ -80,7 +81,7 @@ def run() -> None:
     IA_STATUS_OFF = False
         
     while True:
-        bandas = 0
+        
         IA_STATUS_ON = gpio.input(BTN_START)        
         
         while IA_STATUS_ON:
