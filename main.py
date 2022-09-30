@@ -90,7 +90,7 @@ def run() -> None:
             time.sleep(1);
             bandas = 80
             esp_bandas.write([bandas])
-            bandas = 0   
+            bandas = 0
             IA_STATUS_OFF = gpio.input(BTN_CLOSE)
                 
             cap = cv2.VideoCapture(0)
@@ -137,19 +137,12 @@ def run() -> None:
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print(category.category_name + ': ' + str(hojalata)+': '+ str(score) +'%')
                             break
-                        #elif category.category_name == 'fondo' and score >= 60:
-                            #cv2.imwrite(saveImage('fondo'),image)
-                            #fondo+=1
-                            #procesos.append(65)
-                            # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
-                            #print(category.category_name + ': ' + str(fondo)+': '+ str(score) +'%')
-                           # break
-                        #else:
-                            #cv2.imwrite(saveImage('desconocido'),image)
-                           # desconocido+=1
-                           # procesos.append(68)
-                           # print('desconocido: '+str(desconocido))
-                           # break
+                        else:
+                            cv2.imwrite(saveImage('desconocido'),image)
+                            desconocido+=1
+                            procesos.append(68)
+                            print('desconocido: '+str(desconocido))
+                            break
 
                     if IA_STATUS_OFF:
                         IA_STATUS_ON = False
