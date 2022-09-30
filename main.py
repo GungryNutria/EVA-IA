@@ -71,7 +71,7 @@ def run() -> None:
     # Enable Coral by this setting
     classification_options = processor.ClassificationOptions(max_results=3, score_threshold=0.0)
     options = vision.ImageClassifierOptions(base_options=base_options, classification_options=classification_options)
-        
+    
     classifier = vision.ImageClassifier.create_from_options(options)
 
     print("Esperando respuesta")
@@ -89,12 +89,12 @@ def run() -> None:
             bandas = 0
             IA_STATUS_OFF = gpio.input(BTN_CLOSE)
                 
+            cap = cv2.VideoCapture(0)
+            cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+            cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
            
             try:
                 while cap.isOpened():
-                    cap = cv2.VideoCapture(0)
-                    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-                    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
                     # Start capturing video input from the camera     
                     success,image = cap.read()
