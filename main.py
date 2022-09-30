@@ -87,7 +87,10 @@ def run() -> None:
             bandas = 65
             esp_bandas.write([bandas])
             bandas = 0
-
+            time.sleep(1);
+            bandas = 80
+            esp_bandas.write([bandas])
+            bandas = 0   
             IA_STATUS_OFF = gpio.input(BTN_CLOSE)
                 
             cap = cv2.VideoCapture(0)
