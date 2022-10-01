@@ -21,7 +21,7 @@ Servo servoB;
 #define raspC 8
 Servo servoC;
 
-char servo;
+char servo = '';
 
 void setup() {
   // A
@@ -45,63 +45,49 @@ void setup() {
 }
 
 void loop() {
+  
   // Condicion si el fotoelectrico detecta algo enfrente de el
   if(digitalRead(sensorA) == HIGH){
     // Mando una señal alta a la rasp para que busque un proceso para el servo A
     digitalWrite(raspA,HIGH);
     delay(500);
-    digitalWrite(raspA,LOW);
-  }else{
-    // Devolvemos el servo a su estado de origen
-    servoA.write(1);
-  }
+    if(Serial.available()){servo = Serial.read()}
+    if (servo == 'A'){
+      while(digitalRead(btn1) != 1){
+      //Mantendra el servo A a 75 grados mientras el reciclador no tenga cambios
+      servoA.write(75);
+    }
+    }
+  }else{servoA.write(1);/* Devolvemos el servo a su estado de origen */}
+
 
   // Condicion si el fotoelectrico detecta algo enfrente de el
   if(digitalRead(sensorB) == HIGH){
     // Mando una señal alta a la rasp para que busque un proceso para el servo B
     digitalWrite(raspB,HIGH);
     delay(500);
-    digitalWrite(raspB,LOW);
-  }else{
-    // Devolvemos el servo a su estado de origen
-    servoB.write(1);
-  }
+    if(Serial.available()){servo = Serial.read()}
+    if (servo == 'P'){
+      while(digitalRead(btn2) != 1){
+      //Mantendra el servo A a 75 grados mientras el reciclador no tenga cambios
+      servoB.write(75);
+    }
+    }
+  }else{servoB.write(1);/* Devolvemos el servo a su estado de origen */}
+
 
   // Condicion si el fotoelectrico detecta algo enfrente de el
   if(digitalRead(sensorC) == HIGH){
     // Mando una señal alta a la rasp para que busque un proceso para el servo C
     digitalWrite(raspC,HIGH);
     delay(500);
-    digitalWrite(raspC,LOW);
-    }
-  }else{
-    // Devolvemos el servo a su estado de origen
-    servoC.write(1);
-  }
-
-  if(Serial.available()){servo = Serial.read()}
-  
-  switch(material){
-    // Si la IA devuelve una P se movera el servo A
-    case 'P':
-    while(digitalRead(btn1) != 1){
+    if(Serial.available()){servo = Serial.read()}
+    if (servo == 'H'){
+      while(digitalRead(btn3) != 1){
       //Mantendra el servo A a 75 grados mientras el reciclador no tenga cambios
-      servoA.write(75);
-    }
-    break;
-    // Si la IA devuelve una P se movera el servo B
-    case 'A':
-    while(digitalRead(btn2) != 1){
-      //Mantendra el servo B a 75 grados mientras el reciclador no tenga cambios
-      servoB.write(75);
-    }
-    break;
-    // Si la IA devuelve una P se movera el servo C
-    case 'H':
-    while(digitalRead(btn3) != 1){
-      //Mantendra el servo B a 75 grados mientras el reciclador no tenga cambios
       servoC.write(75);
-    break;
-  }
+    }
+    }
+  }else{servoC.write(1);/* Devolvemos el servo a su estado de origen */}
 
 }
