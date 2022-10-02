@@ -116,21 +116,21 @@ def run() -> None:
                             aluminio+=1
                             procesos.append(65)
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
-                            print(category.category_name + ': ' + str(aluminio)+': '+ str(score) +'%')
+                            print('{} {}: {}%'.format(category.category_name,aluminio,score))
                             break
                         elif category.category_name == 'plastico' and score >= 10:
                             cv2.imwrite(saveImage('plastico'),image)
                             plastico+=1
                             procesos.append(72)
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
-                            print(category.category_name + ': ' + str(plastico)+': '+ str(score) +'%')
+                            print('{} {}: {}%'.format(category.category_name,plastico,score))
                             break
                         elif category.category_name == 'hojalata' and score >= 10:
                             cv2.imwrite(saveImage('hojalata'),image)
                             hojalata+=1
                             procesos.append(80)
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
-                            print(category.category_name + ': ' + str(hojalata)+': '+ str(score) +'%')
+                            print('{} {}: {}%'.format(category.category_name,hojalata,score))
                             break
                         # elif category.category_name == 'fondo' and score >= 50:
                         #     fondo+=1
