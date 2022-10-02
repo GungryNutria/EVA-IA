@@ -111,38 +111,51 @@ def run() -> None:
                         category_name = category.category_name
                         score = round(category.score, 2) * 100
                         materiales.append(m.Material(category_name,score))
-                
-                    material = max(materiales, key=materiales.get)
-                    max_score = max(material.values)
+                                    
+                    for material in materiales:
+                        if material.material == "aluminio" and material.score >= 60:
+                            saveImage(material.material,image) 
+                            aluminio+=1
+                            respuesta = 65
+                            #esp2.write([respuesta])
+                            #esp.write([respuesta])
+                            respuesta = 0
+                            print(material.material)
+                            break
 
-                    if material == 'aluminio':
-                        cv2.imwrite(saveImage('aluminio'),image)
-                        aluminio+=1
-                        procesos.append(65)
-                        # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
-                        print('Aluminio: ' + str(aluminio)+': '+ str(max_score) +'%')
-                    elif material == 'plastico':
-                        cv2.imwrite(saveImage('plastico'),image)
-                        plastico+=1
-                        procesos.append(72)
-                        # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
-                        print('Plastico: ' + str(plastico)+': '+ str(max_score) +'%')
-                    elif material == 'hojalata':
-                        cv2.imwrite(saveImage('hojalata'),image)
-                        hojalata+=1
-                        procesos.append(80)
-                        # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
-                        print('Hojalata: ' + str(hojalata)+': '+ str(max_score) +'%')
-                    elif material == 'fondo':
-                        fondo+=1
-                        procesos.append(72)
-                        # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
-                        print('Fondo: ' + str(fondo)+': '+ str(max_score) +'%')
-                    else:
-                        cv2.imwrite(saveImage('desconocido'),image)
-                        desconocido+=1
-                        procesos.append(68)
-                        print('Desconocido: '+str(desconocido))
+                        elif material.material == "hojalata" and  material.score >= 60:
+                            saveImage(material.material,image)
+                            hojalata +=1
+                            fondo = 0
+                            respuesta = 72
+                            #esp2.write([respuesta])
+                            #esp.write([respuesta])
+                            respuesta = 0
+                            print(material.material)
+                            break
+                        elif material.material == "plastico" and  material.score >= 60:
+                            saveImage(material.material,image)
+                            plastico += 1
+                            fondo = 0
+                            respuesta = 80
+                            #esp2.write([respuesta])
+                            #esp.write([respuesta])
+                            respuesta = 0
+                            print(material.material)
+                            break
+
+                        elif material.material == "fondo" and  material.score >= 50:
+                            saveImage(material.material,image)                     
+                            fondo += 1
+                            print(material.material)
+                            respuesta = 70
+                            #esp2.write([respuesta])
+                            #esp.write([respuesta])
+                            respuesta = 0
+                        else:
+                            saveImage("desconocido",image)
+                            print("desconocido")
+                            break
 
                     if IA_STATUS_OFF:
                         IA_STATUS_ON = False
