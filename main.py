@@ -108,53 +108,41 @@ def run() -> None:
                     categories = classifier.classify(tensor_image)
 
                     for idx, category in enumerate(categories.classifications[0].categories):
-                        category_name = category.category_name
+
                         score = round(category.score, 2) * 100
-                        materiales.append(m.Material(category_name,score))
-                                    
-                    for material in materiales:
-                        if material.material == "aluminio" and material.score >= 10:
-                            cv2.imwrite(saveImage(material.material,image))
+                        if category.category_name == 'aluminio' and score >= 10:
+                            cv2.imwrite(saveImage('aluminio'),image)
                             aluminio+=1
-                            respuesta = 65
-                            #esp2.write([respuesta])
-                            #esp.write([respuesta])
-                            respuesta = 0
-                            print('{} {}: {}%'.format(material.material,aluminio,material.score))
+                            procesos.append(65)
+                            # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
+                            print('{} {}: {}%'.format(category.category_name,aluminio,score))
                             break
-
-                        elif material.material == "hojalata" and  material.score >= 10:
-                            cv2.imwrite(saveImage(material.material,image))
-                            hojalata +=1
-                            fondo = 0
-                            respuesta = 72
-                            #esp2.write([respuesta])
-                            #esp.write([respuesta])
-                            respuesta = 0
-                            print('{} {}: {}%'.format(material.material,hojalata,material.score))
+                        elif category.category_name == 'plastico' and score >= 10:
+                            cv2.imwrite(saveImage('plastico'),image)
+                            plastico+=1
+                            procesos.append(72)
+                            # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
+                            print('{} {}: {}%'.format(category.category_name,plastico,score))
                             break
-                        elif material.material == "plastico" and  material.score >= 10:
-                            cv2.imwrite(saveImage(material.material,image))
-                            plastico += 1
-                            fondo = 0
-                            respuesta = 80
-                            respuesta = 0
-                            print('{} {}: {}%'.format(material.material,plastico,material.score))
+                        elif category.category_name == 'hojalata' and score >= 10:
+                            cv2.imwrite(saveImage('hojalata'),image)
+                            hojalata+=1
+                            procesos.append(80)
+                            # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
+                            print('{} {}: {}%'.format(category.category_name,hojalata,score))
                             break
-
-                        # elif material.material == "fondo" and  material.score >= 50:
-                        #     cv2.imwrite(saveImage(material.material,image))
-                        #     fondo += 1
-                        #     print(material.material)
-                        #     respuesta = 70
-                        #     esp2.write([respuesta])
-                        #     esp.write([respuesta])
-                        #     respuesta = 0
-                        #     print('{} {}: {}%'.format(material.material,fondo,material.score))
-                        # else:
-                        #     cv2.imwrite(saveImage(material.material,image))
-                        #     print("desconocido")
-                        #     break
+                        elif category.category_name == 'fondo' and score >= 50:
+                            fondo+=1
+                            procesos.append(72)
+                            # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
+                            print(category.category_name + ': ' + str(hojalata)+': '+ str(score) +'%')
+                            break
+                        else:
+                            cv2.imwrite(saveImage('desconocido'),image)
+                            desconocido+=1
+                            procesos.append(68)
+                            print('desconocido: '+str(desconocido))
+                            break
                     
                     if IA_STATUS_OFF:
                         IA_STATUS_ON = False
@@ -165,7 +153,7 @@ def run() -> None:
                     cap.release()
                     cv2.waitKey(0) # waits until a key is pressed
                     cv2.destroyAllWindows()
-                    time.sleep(1)
+                time.sleep(1)
             except:
                 logging.error("No se pudo prender la camara")
                 #Mando Error de que la camara no funciona
