@@ -114,47 +114,32 @@ def run() -> None:
                                     
                     for material in materiales:
                         if material.material == "aluminio" and material.score >= 60:
-                            saveImage(material.material,image) 
+                            bandas = 80
+                            esp_bandas.write([bandas])
+                            cv2.imwrite(saveImage('aluminio'),image)                     
                             aluminio+=1
-                            respuesta = 65
-                            #esp2.write([respuesta])
-                            #esp.write([respuesta])
-                            respuesta = 0
-                            print(material.material)
+                            print('{} {}: {}%'.format(material.material,plastico,material.score))
                             break
 
                         elif material.material == "hojalata" and  material.score >= 60:
-                            saveImage(material.material,image)
+                            bandas = 80
+                            esp_bandas.write([bandas])
+                            cv2.imwrite(saveImage('hojalata'),image)                     
                             hojalata +=1
-                            fondo = 0
-                            respuesta = 72
-                            #esp2.write([respuesta])
-                            #esp.write([respuesta])
-                            respuesta = 0
-                            print(material.material)
+                            print('{} {}: {}%'.format(material.material,plastico,material.score))
                             break
                         elif material.material == "plastico" and  material.score >= 60:
-                            saveImage(material.material,image)
+                            bandas = 80
+                            esp_bandas.write([bandas])
+                            cv2.imwrite(saveImage('plastico'),image)                     
                             plastico += 1
-                            fondo = 0
-                            respuesta = 80
-                            #esp2.write([respuesta])
-                            #esp.write([respuesta])
-                            respuesta = 0
-                            print(material.material)
+                            print('{} {}: {}%'.format(material.material,plastico,material.score))
                             break
 
                         elif material.material == "fondo" and  material.score >= 50:
-                            saveImage(material.material,image)                     
+                            cv2.imwrite(saveImage('fondo'),image)                     
                             fondo += 1
-                            print(material.material)
-                            respuesta = 70
-                            #esp2.write([respuesta])
-                            #esp.write([respuesta])
-                            respuesta = 0
-                        else:
-                            saveImage("desconocido",image)
-                            print("desconocido")
+                            print('{} {}: {}%'.format(material.material,plastico,material.score))
                             break
 
                     if IA_STATUS_OFF:
