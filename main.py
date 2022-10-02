@@ -116,34 +116,32 @@ def run() -> None:
                         procesos.append(65)
                         # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                         print('{} {}: {}%'.format(material,aluminio,max_score))
-                        break
+                        
                     elif material == 'plastico' and max_score >= 10:
                         cv2.imwrite(saveImage('plastico'),image)
                         plastico+=1
                         procesos.append(72)
                         # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                         print('{} {}: {}%'.format(material,plastico,max_score))
-                        break
+                        
                     elif material == 'hojalata' and max_score >= 10:
                         cv2.imwrite(saveImage('hojalata'),image)
                         hojalata+=1
                         procesos.append(80)
                         # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                         print('{} {}: {}%'.format(material,hojalata,max_score))
-                        break
+                        
                     elif material == 'fondo' and max_score >= 50:
                         fondo+=1
                         procesos.append(72)
                         # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                         print(material + ': ' + str(hojalata)+': '+ str(max_score) +'%')
-                        break
                     else:
                         cv2.imwrite(saveImage('desconocido'),image)
                         desconocido+=1
                         procesos.append(68)
                         print('desconocido: '+str(desconocido))
-                        break
-
+                    
                     if IA_STATUS_OFF:
                         IA_STATUS_ON = False
                         bandas = 80
