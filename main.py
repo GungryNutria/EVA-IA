@@ -121,14 +121,14 @@ def run() -> None:
                             print('{} {}: {}%'.format(material.material,plastico,material.score))
                             break
 
-                        elif material.material == "hojalata" and  material.score >= 60:
+                        if material.material == "hojalata" and  material.score >= 60:
                             bandas = 80
                             esp_bandas.write([bandas])
                             cv2.imwrite(saveImage('hojalata'),image)                     
                             hojalata +=1
                             print('{} {}: {}%'.format(material.material,plastico,material.score))
                             break
-                        elif material.material == "plastico" and  material.score >= 60:
+                        if material.material == "plastico" and  material.score >= 60:
                             bandas = 80
                             esp_bandas.write([bandas])
                             cv2.imwrite(saveImage('plastico'),image)                     
@@ -136,7 +136,7 @@ def run() -> None:
                             print('{} {}: {}%'.format(material.material,plastico,material.score))
                             break
 
-                        elif material.material == "fondo" and  material.score >= 50:
+                        if material.material == "fondo" and  material.score >= 50:
                             cv2.imwrite(saveImage('fondo'),image)                     
                             fondo += 1
                             print('{} {}: {}%'.format(material.material,plastico,material.score))
