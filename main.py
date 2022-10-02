@@ -106,9 +106,6 @@ def run() -> None:
                     tensor_image = vision.TensorImage.create_from_array(rgb_image)
                     # List classification results
                     categories = classifier.classify(tensor_image)
-                    
-                    material = max(categories.classifications[0].categories, key=categories.classifications[0].categories.get)
-                    max_score = max(categories.classifications[0].categories)
 
                     for idx, category in enumerate(categories.classifications[0].categories):
                         category_name = category.category_name
@@ -116,7 +113,7 @@ def run() -> None:
                         materiales.append(m.Material(category_name,score))
                                     
                     for material in materiales:
-                        if material.material == "aluminio" and material.score >= 60:
+                        if material.material == "aluminio" and material.score >= 10:
                             cv2.imwrite(saveImage(material.material,image))
                             aluminio+=1
                             respuesta = 65
@@ -126,7 +123,7 @@ def run() -> None:
                             print('{} {}: {}%'.format(material.material,aluminio,material.score))
                             break
 
-                        elif material.material == "hojalata" and  material.score >= 60:
+                        elif material.material == "hojalata" and  material.score >= 10:
                             cv2.imwrite(saveImage(material.material,image))
                             hojalata +=1
                             fondo = 0
@@ -136,7 +133,7 @@ def run() -> None:
                             respuesta = 0
                             print('{} {}: {}%'.format(material.material,hojalata,material.score))
                             break
-                        elif material.material == "plastico" and  material.score >= 60:
+                        elif material.material == "plastico" and  material.score >= 10:
                             cv2.imwrite(saveImage(material.material,image))
                             plastico += 1
                             fondo = 0
@@ -145,19 +142,19 @@ def run() -> None:
                             print('{} {}: {}%'.format(material.material,plastico,material.score))
                             break
 
-                        elif material.material == "fondo" and  material.score >= 50:
-                            cv2.imwrite(saveImage(material.material,image))
-                            fondo += 1
-                            print(material.material)
-                            respuesta = 70
-                            #esp2.write([respuesta])
-                            #esp.write([respuesta])
-                            respuesta = 0
-                            print('{} {}: {}%'.format(material.material,fondo,material.score))
-                        else:
-                            cv2.imwrite(saveImage(material.material,image))
-                            print("desconocido")
-                            break
+                        # elif material.material == "fondo" and  material.score >= 50:
+                        #     cv2.imwrite(saveImage(material.material,image))
+                        #     fondo += 1
+                        #     print(material.material)
+                        #     respuesta = 70
+                        #     esp2.write([respuesta])
+                        #     esp.write([respuesta])
+                        #     respuesta = 0
+                        #     print('{} {}: {}%'.format(material.material,fondo,material.score))
+                        # else:
+                        #     cv2.imwrite(saveImage(material.material,image))
+                        #     print("desconocido")
+                        #     break
                     
                     if IA_STATUS_OFF:
                         IA_STATUS_ON = False
