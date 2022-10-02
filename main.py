@@ -137,7 +137,7 @@ def run() -> None:
                         fondo+=1
                         procesos.append(72)
                         # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
-                        print('Fondo: ' + str(hojalata)+': '+ str(max_score) +'%')
+                        print('Fondo: ' + str(fondo)+': '+ str(max_score) +'%')
                     else:
                         cv2.imwrite(saveImage('desconocido'),image)
                         desconocido+=1
