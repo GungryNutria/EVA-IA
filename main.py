@@ -110,7 +110,6 @@ def run() -> None:
                     for idx, category in enumerate(categories.classifications[0].categories):
 
                         score = round(category.score, 2) * 100
-                        print(category.category_name + ': ' + str(aluminio)+': '+ str(score) +'%')
                         if category.category_name == 'aluminio' and score >= 10:
                             cv2.imwrite(saveImage('aluminio'),image)
                             aluminio+=1
