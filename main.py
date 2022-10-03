@@ -23,6 +23,9 @@ FOTO_PLASTICO = 16
 FOTO_ALUMINIO = 20
 FOTO_HOJALATA = 21
 
+BANDAS_OUTPUT = 23
+BANDAS_INPUT = 24
+
 procesos = []
 materiales = []
 
@@ -62,9 +65,12 @@ def saveImage(material):
 
 def run() -> None:
     global aluminio, plastico, hojalata, fondo, procesos, material, asci, bandas
+    
     gpio.setup( BTN_START , gpio.IN)
     gpio.setup( BTN_CLOSE , gpio.IN)
-    
+    gpio.setup( BANDAS_OUTPUT , gpio.OUT)
+    gpio.setup( BANDAS_INPUT , gpio.IN)
+
     # Initialize the image classification model
     base_options = core.BaseOptions(file_name='model.tflite', use_coral=False, num_threads=4)
         
@@ -76,94 +82,91 @@ def run() -> None:
 
     print("Esperando respuesta")
         
-    IA_STATUS_ON = False
-    IA_STATUS_OFF = False
-        
+    MAQUINA_STATUS_ON = False
+    MAQUINA_STATUS_OFF = False
+    
     while True:
         bandas = 0
-        IA_STATUS_ON = gpio.input(BTN_START)        
+        MAQUINA_STATUS_ON = gpio.input(BTN_START)        
         
-        while IA_STATUS_ON:
-            bandas = 65
-            esp_bandas.write([bandas])
-            bandas = 0
-            IA_STATUS_OFF = gpio.input(BTN_CLOSE)
-                
-            cap = cv2.VideoCapture(0)
-            cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-            cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-           
-            try:
-                while cap.isOpened():
-                    # Start capturing video input from the camera     
-                    success,image = cap.read()
+        while MAQUINA_STATUS_ON:
+            gpio.output(BANDAS_OUTPUT, 1)
 
-                    if not success:
-                        sys.exit('ERROR: Unable to read from webcam. Please verify your webcam settings.')
+            MAQUINA_STATUS_OFF = gpio.input(BTN_CLOSE)
+
+            if gpio.input(BANDAS_INPUT):
+
+                cap = cv2.VideoCapture(0)
+                cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+                cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+            
+                try:
+                    while cap.isOpened():
+                        # Start capturing video input from the camera     
+                        success,image = cap.read()
+
+                        if not success:
+                            sys.exit('ERROR: Unable to read from webcam. Please verify your webcam settings.')
+                            
+                        rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+                        # Create TensorImage from the RGB image
+                        tensor_image = vision.TensorImage.create_from_array(rgb_image)
+                        # List classification results
+                        categories = classifier.classify(tensor_image)
+
+                        for idx, category in enumerate(categories.classifications[0].categories):
+
+                            score = round(category.score, 2) * 100
+                            if category.category_name == 'aluminio' and score >= 10:
+                                cv2.imwrite(saveImage('aluminio'),image)
+                                aluminio+=1
+                                procesos.append(65)
+                                # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
+                                print('{} {}: {}%'.format(category.category_name,aluminio,score))
+                                break
+                            elif category.category_name == 'plastico' and score >= 10:
+                                cv2.imwrite(saveImage('plastico'),image)
+                                plastico+=1
+                                procesos.append(72)
+                                # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
+                                print('{} {}: {}%'.format(category.category_name,plastico,score))
+                                break
+                            elif category.category_name == 'hojalata' and score >= 10:
+                                cv2.imwrite(saveImage('hojalata'),image)
+                                hojalata+=1
+                                procesos.append(80)
+                                # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
+                                print('{} {}: {}%'.format(category.category_name,hojalata,score))
+                                break
+                            elif category.category_name == 'fondo' and score >= 50:
+                                cv2.imwrite(saveImage('fondo'),image)
+                                fondo+=1
+                                procesos.append(72)
+                                # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
+                                print(category.category_name + ': ' + str(hojalata)+': '+ str(score) +'%')
+                                break
+                            else:
+                                cv2.imwrite(saveImage('desconocido'),image)
+                                desconocido+=1
+                                procesos.append(68)
+                                print('desconocido: '+str(desconocido))
+                                break
                         
-                    rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-                    # Create TensorImage from the RGB image
-                    tensor_image = vision.TensorImage.create_from_array(rgb_image)
-                    # List classification results
-                    categories = classifier.classify(tensor_image)
+                        if MAQUINA_STATUS_OFF:
+                            MAQUINA_STATUS_ON = False
+                            gpio.output(BANDAS_OUTPUT, 1)
 
-                    for idx, category in enumerate(categories.classifications[0].categories):
-
-                        score = round(category.score, 2) * 100
-                        if category.category_name == 'aluminio' and score >= 10:
-                            cv2.imwrite(saveImage('aluminio'),image)
-                            aluminio+=1
-                            procesos.append(65)
-                            # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
-                            print('{} {}: {}%'.format(category.category_name,aluminio,score))
-                            break
-                        elif category.category_name == 'plastico' and score >= 10:
-                            cv2.imwrite(saveImage('plastico'),image)
-                            plastico+=1
-                            procesos.append(72)
-                            # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
-                            print('{} {}: {}%'.format(category.category_name,plastico,score))
-                            break
-                        elif category.category_name == 'hojalata' and score >= 10:
-                            cv2.imwrite(saveImage('hojalata'),image)
-                            hojalata+=1
-                            procesos.append(80)
-                            # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
-                            print('{} {}: {}%'.format(category.category_name,hojalata,score))
-                            break
-                        elif category.category_name == 'fondo' and score >= 50:
-                            cv2.imwrite(saveImage('fondo'),image)
-                            fondo+=1
-                            procesos.append(72)
-                            # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
-                            print(category.category_name + ': ' + str(hojalata)+': '+ str(score) +'%')
-                            break
-                        else:
-                            cv2.imwrite(saveImage('desconocido'),image)
-                            desconocido+=1
-                            procesos.append(68)
-                            print('desconocido: '+str(desconocido))
-                            break
-                    
-                    if IA_STATUS_OFF:
-                        IA_STATUS_ON = False
-                        bandas = 80
-                        esp_bandas.write([bandas])
-                        bandas = 0
-
-                    cap.release()
-                    cv2.waitKey(0) # waits until a key is pressed
-                    cv2.destroyAllWindows()
-            except:
-                logging.error("No se pudo prender la camara")
-                #Mando Error de que la camara no funciona
-
-        while IA_STATUS_OFF:
-            print('RETIRE TARJETA')
-            bandas = 80
-            #esp_bandas.write([bandas])
-            bandas = 0   
-            IA_STATUS_OFF = False               
+                        cap.release()
+                        cv2.waitKey(0) # waits until a key is pressed
+                        cv2.destroyAllWindows()
+                except:
+                    logging.error("No se pudo prender la camara")
+                    #Mando Error de que la camara no funciona
+            else:
+                print("No se a detectado nada")
+        while MAQUINA_STATUS_OFF:
+            print('RETIRE TARJETA') 
+            MAQUINAS_STATUS_OFF = False               
        
 def readContainers() -> None:
     while True:
