@@ -67,8 +67,8 @@ def run() -> None:
     global aluminio, plastico, hojalata, fondo, procesos, material, asci, bandas
     gpio.setup( BTN_START , gpio.IN)
     gpio.setup( BTN_CLOSE , gpio.IN)
-    gpio.setup( BANDAS_OUTPUT , gpio.OUT)
-    gpio.setup( BANDAS_INPUT , gpio.IN)
+    #gpio.setup( BANDAS_OUTPUT , gpio.OUT)
+    #gpio.setup( BANDAS_INPUT , gpio.IN)
     # Initialize the image classification model
     base_options = core.BaseOptions(file_name='model.tflite', use_coral=False, num_threads=4)
         
@@ -89,6 +89,7 @@ def run() -> None:
         
         while IA_STATUS_ON:
             if bandas == 0:
+                print("MUEVO BANDAS")
                 bandas = 65
                 esp_bandas.write([bandas])
             
