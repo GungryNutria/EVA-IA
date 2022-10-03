@@ -65,12 +65,10 @@ def saveImage(material):
 
 def run() -> None:
     global aluminio, plastico, hojalata, fondo, procesos, material, asci, bandas
-    
     gpio.setup( BTN_START , gpio.IN)
     gpio.setup( BTN_CLOSE , gpio.IN)
     gpio.setup( BANDAS_OUTPUT , gpio.OUT)
     gpio.setup( BANDAS_INPUT , gpio.IN)
-
     # Initialize the image classification model
     base_options = core.BaseOptions(file_name='model.tflite', use_coral=False, num_threads=4)
         
@@ -82,24 +80,24 @@ def run() -> None:
 
     print("Esperando respuesta")
         
-    MAQUINA_STATUS_ON = False
-    MAQUINA_STATUS_OFF = False
-    
+    IA_STATUS_ON = False
+    IA_STATUS_OFF = False
+        
     while True:
         bandas = 0
-        MAQUINA_STATUS_ON = gpio.input(BTN_START)        
+        IA_STATUS_ON = gpio.input(BTN_START)        
         
-        while MAQUINA_STATUS_ON:
-            gpio.output(BANDAS_OUTPUT, 1)
-
-            MAQUINA_STATUS_OFF = gpio.input(BTN_CLOSE)
-
+        while IA_STATUS_ON:
+            if bandas == 0:
+                bandas = 65
+                esp_bandas.write([bandas])
+            
+            IA_STATUS_OFF = gpio.input(BTN_CLOSE)
+                
             if gpio.input(BANDAS_INPUT):
-
                 cap = cv2.VideoCapture(0)
                 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
                 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-            
                 try:
                     while cap.isOpened():
                         # Start capturing video input from the camera     
@@ -152,9 +150,11 @@ def run() -> None:
                                 print('desconocido: '+str(desconocido))
                                 break
                         
-                        if MAQUINA_STATUS_OFF:
-                            MAQUINA_STATUS_ON = False
-                            gpio.output(BANDAS_OUTPUT, 1)
+                        if IA_STATUS_OFF:
+                            IA_STATUS_ON = False
+                            bandas = 80
+                            esp_bandas.write([bandas])
+                            bandas = 0
 
                         cap.release()
                         cv2.waitKey(0) # waits until a key is pressed
@@ -162,11 +162,13 @@ def run() -> None:
                 except:
                     logging.error("No se pudo prender la camara")
                     #Mando Error de que la camara no funciona
-            else:
-                print("No se a detectado nada")
-        while MAQUINA_STATUS_OFF:
-            print('RETIRE TARJETA') 
-            MAQUINAS_STATUS_OFF = False               
+
+        while IA_STATUS_OFF:
+            print('RETIRE TARJETA')
+            bandas = 80
+            #esp_bandas.write([bandas])
+            bandas = 0   
+            IA_STATUS_OFF = False               
        
 def readContainers() -> None:
     while True:
