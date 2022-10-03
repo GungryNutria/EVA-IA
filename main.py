@@ -160,7 +160,7 @@ def run() -> None:
 
         while IA_STATUS_OFF:
             print('RETIRE TARJETA')
-            gpio.output(BANDAS_OUTPUT,1)  
+            gpio.output(BANDAS_OUTPUT,0)  
             IA_STATUS_OFF = False               
        
 def readContainers() -> None:
