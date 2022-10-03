@@ -67,7 +67,7 @@ def run() -> None:
     global aluminio, plastico, hojalata, fondo, procesos, material, asci, bandas
     gpio.setup( BTN_START , gpio.IN)
     gpio.setup( BTN_CLOSE , gpio.IN)
-    #gpio.setup( BANDAS_OUTPUT , gpio.OUT)
+    gpio.setup( BANDAS_OUTPUT , gpio.OUT)
     #gpio.setup( BANDAS_INPUT , gpio.IN)
     # Initialize the image classification model
     base_options = core.BaseOptions(file_name='model.tflite', use_coral=False, num_threads=4)
@@ -88,10 +88,7 @@ def run() -> None:
         IA_STATUS_ON = gpio.input(BTN_START)        
         
         while IA_STATUS_ON:
-            if bandas == 0:
-                print("MUEVO BANDAS")
-                bandas = 65
-                esp_bandas.write([bandas])
+            gpio.output(BANDAS_OUTPUT,1)
             
             IA_STATUS_OFF = gpio.input(BTN_CLOSE)
                 
@@ -152,9 +149,7 @@ def run() -> None:
                     
                     if IA_STATUS_OFF:
                         IA_STATUS_ON = False
-                        bandas = 80
-                        esp_bandas.write([bandas])
-                        bandas = 0
+                        gpio.output(BANDAS_OUTPUT,0)
 
                     cap.release()
                     cv2.waitKey(0) # waits until a key is pressed
@@ -165,9 +160,7 @@ def run() -> None:
 
         while IA_STATUS_OFF:
             print('RETIRE TARJETA')
-            bandas = 80
-            #esp_bandas.write([bandas])
-            bandas = 0   
+            gpio.output(BANDAS_OUTPUT,1)  
             IA_STATUS_OFF = False               
        
 def readContainers() -> None:
