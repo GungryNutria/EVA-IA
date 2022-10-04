@@ -89,7 +89,7 @@ def run() -> None:
         
         while IA_STATUS_ON:
             gpio.output(BANDAS_OUTPUT,1)
-            
+            time.sleep(1)
             IA_STATUS_OFF = gpio.input(BTN_CLOSE)
                 
             cap = cv2.VideoCapture(0)
@@ -159,7 +159,7 @@ def run() -> None:
                     cap.release()
                     cv2.waitKey(0) # waits until a key is pressed
                     cv2.destroyAllWindows()
-                time.sleep(0.5)
+                    
             except:
                 logging.error("No se pudo prender la camara")
                 #Mando Error de que la camara no funciona
