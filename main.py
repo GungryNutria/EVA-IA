@@ -231,11 +231,11 @@ def main():
     # run()
     gpio.setmode(gpio.BCM)
     ia = threading.Thread(target=run)
-    servos = threading.Thread(target=moveServos)
+    #servos = threading.Thread(target=moveServos)
     # containers = threading.Thread(target=readContainers)
     
     ia.start()
-    servos.start()
+    #servos.start()
     # containers.start()
 
 if __name__ == '__main__':
