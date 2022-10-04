@@ -156,7 +156,7 @@ def run() -> None:
                     cap.release()
                     cv2.waitKey(0) # waits until a key is pressed
                     cv2.destroyAllWindows()
-                time.leep(1)
+                time.leep(2.5)
             except:
                 logging.error("No se pudo prender la camara")
                 #Mando Error de que la camara no funciona
@@ -195,10 +195,9 @@ def moveServos() -> None:
     gpio.setup(SERVO_HOJALATA, gpio.OUT)
 
     global procesos
-    bandera = 0
     print('Esperando respuesta')
     while True:
-        if gpio.input(SERVO_PLASTICO):
+        if gpio.input(FOTO_PLASTICO):
             print("PLASTICO")
             for i in range(0,len(procesos)):
                 if procesos[i] == 65:
