@@ -199,6 +199,7 @@ def moveServos() -> None:
     print('Esperando respuesta')
     while True:
         if gpio.input(SERVO_PLASTICO):
+            print("PLASTICO")
             for i in range(0,len(procesos)):
                 if procesos[i] == 65:
                     gpio.output(SERVO_ALUMINIO,1)
@@ -207,6 +208,7 @@ def moveServos() -> None:
                     procesos.pop()
                     break
         if gpio.input(FOTO_ALUMINIO):
+            print("ALUMINIO")
             for i in range(0,len(procesos)):
                 if procesos[i] == 72:
                     gpio.output(SERVO_PLASTICO,1)
@@ -215,6 +217,7 @@ def moveServos() -> None:
                     procesos.pop()
                     break
         if gpio.input(FOTO_HOJALATA):
+            print("HOJALATA")
             for i in range(0,len(procesos)):
                 if procesos[i] == 80:
                     gpio.output(SERVO_HOJALATA,1)
