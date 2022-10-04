@@ -19,6 +19,10 @@ logging.basicConfig(filename='eva.log', filemode='w', format='%(name)s - %(level
 BTN_START = 17
 BTN_CLOSE = 27
 
+SERVO_PLASTICO = 6
+SERVO_ALUMINIO = 19
+SERVO_HOJALATA = 26
+
 FOTO_PLASTICO = 16
 FOTO_ALUMINIO = 20
 FOTO_HOJALATA = 21
@@ -136,14 +140,12 @@ def run() -> None:
                         elif category.category_name == 'fondo' and score >= 50:
                             cv2.imwrite(saveImage('fondo'),image)
                             fondo+=1
-                            procesos.append(72)
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print(category.category_name + ': ' + str(hojalata)+': '+ str(score) +'%')
                             break
                         else:
                             cv2.imwrite(saveImage('desconocido'),image)
                             desconocido+=1
-                            procesos.append(68)
                             print('desconocido: '+str(desconocido))
                             break
                     
@@ -188,38 +190,38 @@ def moveServos() -> None:
     gpio.setup(FOTO_ALUMINIO, gpio.IN)
     gpio.setup(FOTO_HOJALATA, gpio.IN)
 
+    gpio.setup(SERVO_PLASTICO, gpio.OUT)
+    gpio.setup(SERVO_ALUMINIO, gpio.OUT)
+    gpio.setup(SERVO_HOJALATA, gpio.OUT)
+
     global procesos
     bandera = 0
     print('Esperando respuesta')
     while True:
-        if gpio.input(FOTO_PLASTICO) and len(procesos) > 0:
-            for i in range(0,len(procesos)):
-                if procesos[i] == 80:
-                    esp_servos.write([procesos[i]])
-                    bandera = i
-                    break
-        elif gpio.input(FOTO_ALUMINIO) and len(procesos) > 0:
+        if gpio.input(SERVO_PLASTICO):
             for i in range(0,len(procesos)):
                 if procesos[i] == 65:
-                    esp_servos.write([procesos[i]])
-                    bandera = i
+                    gpio.output(SERVO_ALUMINIO,1)
+                    time.sleep(1)
+                    gpio.output(SERVO_ALUMINIO,0)
+                    procesos.pop()
                     break
-        elif gpio.input(FOTO_HOJALATA) and len(procesos) > 0:
+        if gpio.input(FOTO_ALUMINIO):
             for i in range(0,len(procesos)):
                 if procesos[i] == 72:
-                    esp_servos.write([procesos[i]])
-                    bandera = i
+                    gpio.output(SERVO_PLASTICO,1)
+                    time.sleep(1)
+                    gpio.output(SERVO_PLASTICO,0)
+                    procesos.pop()
                     break
-        elif bandera > 0:
-            for j in range(bandera,len(procesos)):
-                if procesos[j]:
-                    procesos[j] = procesos[j+1]
-                else:
-                    bandera = 0
-                    break
-        else:
-            bandera = 0
-        
+        if gpio.input(FOTO_HOJALATA):
+            for i in range(0,len(procesos)):
+                if procesos[i] == 80:
+                    gpio.output(SERVO_HOJALATA,1)
+                    time.sleep(1)
+                    gpio.output(SERVO_HOJALATA,0)
+                    procesos.pop()
+                    break        
             
             
     
@@ -227,11 +229,11 @@ def main():
     # run()
     gpio.setmode(gpio.BCM)
     ia = threading.Thread(target=run)
-    #servos = threading.Thread(target=moveServos)
+    servos = threading.Thread(target=moveServos)
     # containers = threading.Thread(target=readContainers)
     
     ia.start()
-    #servos.start()
+    servos.start()
     # containers.start()
 
 if __name__ == '__main__':
