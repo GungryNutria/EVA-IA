@@ -91,6 +91,10 @@ def run() -> None:
         bandas = 0
         IA_STATUS_ON = gpio.input(BTN_START)        
         
+        gpio.setup(SERVO_PLASTICO, gpio.OUT)
+        gpio.setup(SERVO_ALUMINIO, gpio.OUT)
+        gpio.setup(SERVO_HOJALATA, gpio.OUT)
+        
         while IA_STATUS_ON:
             gpio.output(BANDAS_OUTPUT,1)
             
@@ -117,6 +121,7 @@ def run() -> None:
 
                         score = round(category.score, 2) * 100
                         if category.category_name == 'aluminio' and score >= 10:
+                            gpio.output(SERVO_ALUMINIO,1)
                             cv2.imwrite(saveImage('aluminio'),image)
                             aluminio+=1
                             procesos.append(65)
@@ -124,6 +129,7 @@ def run() -> None:
                             print('{} {}: {}%'.format(category.category_name,aluminio,score))
                             break
                         elif category.category_name == 'plastico' and score >= 10:
+                            gpio.output(SERVO_PLASTICO,1)
                             cv2.imwrite(saveImage('plastico'),image)
                             plastico+=1
                             procesos.append(72)
@@ -131,6 +137,7 @@ def run() -> None:
                             print('{} {}: {}%'.format(category.category_name,plastico,score))
                             break
                         elif category.category_name == 'hojalata' and score >= 10:
+                            gpio.output(SERVO_HOJALATA,1)
                             cv2.imwrite(saveImage('hojalata'),image)
                             hojalata+=1
                             procesos.append(80)
@@ -190,9 +197,7 @@ def moveServos() -> None:
     gpio.setup(FOTO_ALUMINIO, gpio.IN)
     gpio.setup(FOTO_HOJALATA, gpio.IN)
 
-    gpio.setup(SERVO_PLASTICO, gpio.OUT)
-    gpio.setup(SERVO_ALUMINIO, gpio.OUT)
-    gpio.setup(SERVO_HOJALATA, gpio.OUT)
+    
 
     global procesos
     print('Esperando respuesta')
