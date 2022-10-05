@@ -72,6 +72,9 @@ def run() -> None:
     gpio.setup( BTN_START , gpio.IN)
     gpio.setup( BTN_CLOSE , gpio.IN)
     gpio.setup( BANDAS_OUTPUT , gpio.OUT)
+    gpio.setup( SERVO_PLASTICO , gpio.OUT)
+    gpio.setup( SERVO_ALUMINIO , gpio.OUT)
+    gpio.setup( SERVO_HOJALATA , gpio.OUT)
     #gpio.setup( BANDAS_INPUT , gpio.IN)
     # Initialize the image classification model
     base_options = core.BaseOptions(file_name='model.tflite', use_coral=False, num_threads=4)
@@ -90,10 +93,6 @@ def run() -> None:
     while True:
         bandas = 0
         IA_STATUS_ON = gpio.input(BTN_START)        
-        
-        gpio.setup(SERVO_PLASTICO, gpio.OUT)
-        gpio.setup(SERVO_ALUMINIO, gpio.OUT)
-        gpio.setup(SERVO_HOJALATA, gpio.OUT)
         
         while IA_STATUS_ON:
             gpio.output(BANDAS_OUTPUT,1)
