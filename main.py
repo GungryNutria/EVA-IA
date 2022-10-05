@@ -19,7 +19,7 @@ logging.basicConfig(filename='eva.log', filemode='w', format='%(name)s - %(level
 BTN_START = 17
 BTN_CLOSE = 27
 
-SERVO_PLASTICO = 5
+SERVO_PLASTICO = 4
 SERVO_ALUMINIO = 6
 SERVO_HOJALATA = 26
 
