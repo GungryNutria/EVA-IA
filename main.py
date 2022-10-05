@@ -163,7 +163,7 @@ def run() -> None:
                     cap.release()
                     cv2.waitKey(0) # waits until a key is pressed
                     cv2.destroyAllWindows()
-                time.leep(2.5)
+                time.leep(1)
             except:
                 logging.error("No se pudo prender la camara")
                 #Mando Error de que la camara no funciona
