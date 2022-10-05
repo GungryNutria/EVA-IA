@@ -19,8 +19,8 @@ logging.basicConfig(filename='eva.log', filemode='w', format='%(name)s - %(level
 BTN_START = 17
 BTN_CLOSE = 27
 
-SERVO_PLASTICO = 6
-SERVO_ALUMINIO = 19
+SERVO_PLASTICO = 5
+SERVO_ALUMINIO = 6
 SERVO_HOJALATA = 26
 
 FOTO_PLASTICO = 16
@@ -95,8 +95,12 @@ def run() -> None:
         IA_STATUS_ON = gpio.input(BTN_START)        
         
         while IA_STATUS_ON:
-            gpio.output(BANDAS_OUTPUT,1)
             
+            gpio.output(BANDAS_OUTPUT,1)
+            gpio.output(SERVO_ALUMINIO,1)
+            gpio.output(SERVO_PLASTICO,1)
+            gpio.output(SERVO_HOJALATA,1)
+
             IA_STATUS_OFF = gpio.input(BTN_CLOSE)
                 
             cap = cv2.VideoCapture(0)
@@ -120,7 +124,6 @@ def run() -> None:
 
                         score = round(category.score, 2) * 100
                         if category.category_name == 'aluminio' and score >= 10:
-                            gpio.output(SERVO_ALUMINIO,1)
                             cv2.imwrite(saveImage('aluminio'),image)
                             aluminio+=1
                             procesos.append(65)
@@ -128,7 +131,6 @@ def run() -> None:
                             print('{} {}: {}%'.format(category.category_name,aluminio,score))
                             break
                         elif category.category_name == 'plastico' and score >= 10:
-                            gpio.output(SERVO_PLASTICO,1)
                             cv2.imwrite(saveImage('plastico'),image)
                             plastico+=1
                             procesos.append(72)
@@ -136,7 +138,6 @@ def run() -> None:
                             print('{} {}: {}%'.format(category.category_name,plastico,score))
                             break
                         elif category.category_name == 'hojalata' and score >= 10:
-                            gpio.output(SERVO_HOJALATA,1)
                             cv2.imwrite(saveImage('hojalata'),image)
                             hojalata+=1
                             procesos.append(80)
