@@ -39,14 +39,14 @@ plastico = 0
 hojalata = 0
 desconocido = 0
 fondo = 0
-
+material = 0
 
 
 
 try:
     esp_nextion = serial.Serial('/dev/ttyUSB0',115200)
     #esp_servos = serial.Serial('/dev/ttyUSB2',115200)
-    esp_bandas = serial.Serial('/dev/ttyUSB1',115200)
+    esp_servos = serial.Serial('/dev/ttyUSB1',115200)
     #esp_celdas = serial.Serial('/dev/ttyUSB4',115200)
     #esp_ultras = serial.Serial('/dev/ttyUSB0',115200)
     #esp_errores = serial.Serial('/dev/ttyUSB3',115200)
@@ -68,13 +68,11 @@ def saveImage(material):
         logging.error("No se pudo generar la imagen")
 
 def run() -> None:
-    global aluminio, plastico, hojalata, fondo, procesos, material, asci, bandas
+    global aluminio, plastico, hojalata, fondo, procesos, material, asci, bandas, material
     gpio.setup( BTN_START , gpio.IN)
     gpio.setup( BTN_CLOSE , gpio.IN)
     gpio.setup( BANDAS_OUTPUT , gpio.OUT)
-    gpio.setup( SERVO_PLASTICO , gpio.OUT)
-    gpio.setup( SERVO_ALUMINIO , gpio.OUT)
-    gpio.setup( SERVO_HOJALATA , gpio.OUT)
+
     #gpio.setup( BANDAS_INPUT , gpio.IN)
     # Initialize the image classification model
     base_options = core.BaseOptions(file_name='model.tflite', use_coral=False, num_threads=4)
@@ -97,9 +95,7 @@ def run() -> None:
         while IA_STATUS_ON:
             
             gpio.output(BANDAS_OUTPUT,1)
-            gpio.output(SERVO_ALUMINIO,1)
-            gpio.output(SERVO_PLASTICO,1)
-            gpio.output(SERVO_HOJALATA,1)
+            
 
             IA_STATUS_OFF = gpio.input(BTN_CLOSE)
                 
@@ -127,6 +123,8 @@ def run() -> None:
                             cv2.imwrite(saveImage('aluminio'),image)
                             aluminio+=1
                             procesos.append(65)
+                            material=65
+                            esp_servos.write([material])
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,aluminio,score))
                             break
@@ -134,6 +132,8 @@ def run() -> None:
                             cv2.imwrite(saveImage('plastico'),image)
                             plastico+=1
                             procesos.append(72)
+                            material=72
+                            esp_servos.write([material])
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,plastico,score))
                             break
@@ -141,6 +141,8 @@ def run() -> None:
                             cv2.imwrite(saveImage('hojalata'),image)
                             hojalata+=1
                             procesos.append(80)
+                            material=80
+                            esp_servos.write([material])                            
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,hojalata,score))
                             break
@@ -159,11 +161,13 @@ def run() -> None:
                     if IA_STATUS_OFF:
                         IA_STATUS_ON = False
                         gpio.output(BANDAS_OUTPUT,0)
-
+                    
+                    serial.reset_input_buffer()
+                    serial.reset_output_buffer()
                     cap.release()
                     cv2.waitKey(0) # waits until a key is pressed
                     cv2.destroyAllWindows()
-                time.leep(1)
+                    time.leep(2)
             except:
                 logging.error("No se pudo prender la camara")
                 #Mando Error de que la camara no funciona
