@@ -16,8 +16,8 @@ from tflite_support.task import vision
 logging.basicConfig(filename='eva.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
 
 # Visualization parameters
-BTN_START = 19
-BTN_CLOSE = 26
+BTN_START = 17
+BTN_CLOSE = 27
 
 SERVO_PLASTICO = 5
 SERVO_ALUMINIO = 6
