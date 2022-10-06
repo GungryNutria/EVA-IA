@@ -124,7 +124,7 @@ def run() -> None:
                             aluminio+=1
                             #procesos.append(65)
                             material=65
-                            esp_servos.write([material])
+                            esp_servos.write(b'A')
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,aluminio,score))
                             break
@@ -133,7 +133,7 @@ def run() -> None:
                             plastico+=1
                             #procesos.append(72)
                             material=72
-                            esp_servos.write([material])
+                            esp_servos.write(b'P')
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,plastico,score))
                             break
@@ -142,7 +142,7 @@ def run() -> None:
                             hojalata+=1
                             #procesos.append(80)
                             material=80
-                            esp_servos.write([material])                            
+                            esp_servos.write(b'H')                            
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,hojalata,score))
                             break
