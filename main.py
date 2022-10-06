@@ -122,7 +122,7 @@ def run() -> None:
                         if category.category_name == 'aluminio' and score >= 10:
                             cv2.imwrite(saveImage('aluminio'),image)
                             aluminio+=1
-                            procesos.append(65)
+                            #procesos.append(65)
                             material=65
                             esp_servos.write([material])
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
@@ -131,7 +131,7 @@ def run() -> None:
                         elif category.category_name == 'plastico' and score >= 10:
                             cv2.imwrite(saveImage('plastico'),image)
                             plastico+=1
-                            procesos.append(72)
+                            #procesos.append(72)
                             material=72
                             esp_servos.write([material])
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
@@ -140,7 +140,7 @@ def run() -> None:
                         elif category.category_name == 'hojalata' and score >= 10:
                             cv2.imwrite(saveImage('hojalata'),image)
                             hojalata+=1
-                            procesos.append(80)
+                            #procesos.append(80)
                             material=80
                             esp_servos.write([material])                            
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
@@ -162,12 +162,10 @@ def run() -> None:
                         IA_STATUS_ON = False
                         gpio.output(BANDAS_OUTPUT,0)
                     
-                    serial.reset_input_buffer()
-                    serial.reset_output_buffer()
                     cap.release()
                     cv2.waitKey(0) # waits until a key is pressed
                     cv2.destroyAllWindows()
-                    time.leep(2)
+                time.leep(2)
             except:
                 logging.error("No se pudo prender la camara")
                 #Mando Error de que la camara no funciona
