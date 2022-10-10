@@ -19,9 +19,13 @@ logging.basicConfig(filename='eva.log', filemode='w', format='%(name)s - %(level
 BTN_START = 17
 BTN_CLOSE = 27
 
-OUTPUT_PLASTICO = 16
-OUTPUT_ALUMINIO = 20
-OUTPUT_HOJALATA = 21
+SERVO_PLASTICO = 5
+SERVO_ALUMINIO = 6
+SERVO_HOJALATA = 26
+
+FOTO_PLASTICO = 16
+FOTO_ALUMINIO = 20
+FOTO_HOJALATA = 21
 
 BANDAS_OUTPUT = 23
 BANDAS_INPUT = 24
@@ -65,16 +69,16 @@ def saveImage(material):
 
 def run() -> None:
     global aluminio, plastico, hojalata, fondo, procesos, material, asci, bandas, material
-
     gpio.setup( BTN_START , gpio.IN)
     gpio.setup( BTN_CLOSE , gpio.IN)
     gpio.setup( BANDAS_OUTPUT , gpio.OUT)
 
+    #gpio.setup( BANDAS_INPUT , gpio.IN)
     # Initialize the image classification model
     base_options = core.BaseOptions(file_name='model.tflite', use_coral=False, num_threads=4)
         
     # Enable Coral by this setting
-    classification_options = processor.ClassificationOptions(max_results=4, score_threshold=0.0)
+    classification_options = processor.ClassificationOptions(max_results=3, score_threshold=0.0)
     options = vision.ImageClassifierOptions(base_options=base_options, classification_options=classification_options)
     
     classifier = vision.ImageClassifier.create_from_options(options)
@@ -92,13 +96,12 @@ def run() -> None:
             
             gpio.output(BANDAS_OUTPUT,1)
             
+
             IA_STATUS_OFF = gpio.input(BTN_CLOSE)
                 
             cap = cv2.VideoCapture(0)
-            
             cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
             cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-            
             try:
                 while cap.isOpened():
                     # Start capturing video input from the camera     
@@ -116,33 +119,30 @@ def run() -> None:
                     for idx, category in enumerate(categories.classifications[0].categories):
 
                         score = round(category.score, 2) * 100
-                        if category.category_name == 'aluminio' and score >= 50:
+                        if category.category_name == 'aluminio' and score >= 10:
                             cv2.imwrite(saveImage('aluminio'),image)
                             aluminio+=1
                             #procesos.append(65)
                             material=65
-                            esp_servos.write([material])
-                            material=0
+                            esp_servos.write(b'A')
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,aluminio,score))
                             break
-                        elif category.category_name == 'plastico' and score >= 50:
+                        elif category.category_name == 'plastico' and score >= 10:
                             cv2.imwrite(saveImage('plastico'),image)
                             plastico+=1
                             #procesos.append(72)
-                            material=80
-                            esp_servos.write([material])
-                            material=0
+                            material=72
+                            esp_servos.write(b'P')
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,plastico,score))
                             break
-                        elif category.category_name == 'hojalata' and score >= 50:
+                        elif category.category_name == 'hojalata' and score >= 10:
                             cv2.imwrite(saveImage('hojalata'),image)
                             hojalata+=1
                             #procesos.append(80)
-                            material=72
-                            esp_servos.write([material])
-                            material=0                        
+                            material=80
+                            esp_servos.write(b'H')                            
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,hojalata,score))
                             break
@@ -152,11 +152,11 @@ def run() -> None:
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print(category.category_name + ': ' + str(hojalata)+': '+ str(score) +'%')
                             break
-                        #else:
-                        #    cv2.imwrite(saveImage('desconocido'),image)
-                        #    desconocido+=1
-                        #    print('desconocido: '+str(desconocido))
-                        #    break
+                        else:
+                            cv2.imwrite(saveImage('desconocido'),image)
+                            desconocido+=1
+                            print('desconocido: '+str(desconocido))
+                            break
                     
                     if IA_STATUS_OFF:
                         IA_STATUS_ON = False
@@ -173,7 +173,7 @@ def run() -> None:
         while IA_STATUS_OFF:
             print('RETIRE TARJETA')
             gpio.output(BANDAS_OUTPUT,0)  
-            IA_STATUS_OFF = False
+            IA_STATUS_OFF = False               
        
 def readContainers() -> None:
     while True:
@@ -198,6 +198,8 @@ def moveServos() -> None:
     gpio.setup(FOTO_PLASTICO, gpio.IN)
     gpio.setup(FOTO_ALUMINIO, gpio.IN)
     gpio.setup(FOTO_HOJALATA, gpio.IN)
+
+    
 
     global procesos
     print('Esperando respuesta')
