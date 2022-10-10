@@ -96,12 +96,13 @@ def run() -> None:
             
             gpio.output(BANDAS_OUTPUT,1)
             
-
             IA_STATUS_OFF = gpio.input(BTN_CLOSE)
                 
             cap = cv2.VideoCapture(0)
+            
             cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
             cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+            
             try:
                 while cap.isOpened():
                     # Start capturing video input from the camera     
@@ -124,7 +125,7 @@ def run() -> None:
                             aluminio+=1
                             #procesos.append(65)
                             material=65
-                            esp_servos.write(b'A')
+                            esp_servos.write([material])
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,aluminio,score))
                             break
@@ -133,7 +134,7 @@ def run() -> None:
                             plastico+=1
                             #procesos.append(72)
                             material=72
-                            esp_servos.write(b'P')
+                            esp_servos.write([material])
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,plastico,score))
                             break
@@ -142,7 +143,7 @@ def run() -> None:
                             hojalata+=1
                             #procesos.append(80)
                             material=80
-                            esp_servos.write(b'H')                            
+                            esp_servos.write([material])                        
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,hojalata,score))
                             break
@@ -173,7 +174,7 @@ def run() -> None:
         while IA_STATUS_OFF:
             print('RETIRE TARJETA')
             gpio.output(BANDAS_OUTPUT,0)  
-            IA_STATUS_OFF = False               
+            IA_STATUS_OFF = False
        
 def readContainers() -> None:
     while True:
@@ -198,8 +199,6 @@ def moveServos() -> None:
     gpio.setup(FOTO_PLASTICO, gpio.IN)
     gpio.setup(FOTO_ALUMINIO, gpio.IN)
     gpio.setup(FOTO_HOJALATA, gpio.IN)
-
-    
 
     global procesos
     print('Esperando respuesta')
