@@ -74,7 +74,7 @@ def run() -> None:
     base_options = core.BaseOptions(file_name='model.tflite', use_coral=False, num_threads=4)
         
     # Enable Coral by this setting
-    classification_options = processor.ClassificationOptions(max_results=3, score_threshold=0.0)
+    classification_options = processor.ClassificationOptions(max_results=4, score_threshold=0.0)
     options = vision.ImageClassifierOptions(base_options=base_options, classification_options=classification_options)
     
     classifier = vision.ImageClassifier.create_from_options(options)
@@ -116,7 +116,7 @@ def run() -> None:
                     for idx, category in enumerate(categories.classifications[0].categories):
 
                         score = round(category.score, 2) * 100
-                        if category.category_name == 'aluminio' and score >= 60:
+                        if category.category_name == 'aluminio' and score >= 50:
                             cv2.imwrite(saveImage('aluminio'),image)
                             aluminio+=1
                             #procesos.append(65)
@@ -126,7 +126,7 @@ def run() -> None:
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,aluminio,score))
                             break
-                        elif category.category_name == 'plastico' and score >= 60:
+                        elif category.category_name == 'plastico' and score >= 50:
                             cv2.imwrite(saveImage('plastico'),image)
                             plastico+=1
                             #procesos.append(72)
@@ -136,7 +136,7 @@ def run() -> None:
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,plastico,score))
                             break
-                        elif category.category_name == 'hojalata' and score >= 60:
+                        elif category.category_name == 'hojalata' and score >= 50:
                             cv2.imwrite(saveImage('hojalata'),image)
                             hojalata+=1
                             #procesos.append(80)
@@ -165,7 +165,7 @@ def run() -> None:
                     cap.release()
                     cv2.waitKey(0) # waits until a key is pressed
                     cv2.destroyAllWindows()
-                time.leep(1)
+                time.leep(2)
             except:
                 logging.error("No se pudo prender la camara")
                 #Mando Error de que la camara no funciona
