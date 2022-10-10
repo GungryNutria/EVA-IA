@@ -19,13 +19,9 @@ logging.basicConfig(filename='eva.log', filemode='w', format='%(name)s - %(level
 BTN_START = 17
 BTN_CLOSE = 27
 
-SERVO_PLASTICO = 5
-SERVO_ALUMINIO = 6
-SERVO_HOJALATA = 26
-
-FOTO_PLASTICO = 16
-FOTO_ALUMINIO = 20
-FOTO_HOJALATA = 21
+OUTPUT_PLASTICO = 16
+OUTPUT_ALUMINIO = 20
+OUTPUT_HOJALATA = 21
 
 BANDAS_OUTPUT = 23
 BANDAS_INPUT = 24
@@ -69,11 +65,11 @@ def saveImage(material):
 
 def run() -> None:
     global aluminio, plastico, hojalata, fondo, procesos, material, asci, bandas, material
+
     gpio.setup( BTN_START , gpio.IN)
     gpio.setup( BTN_CLOSE , gpio.IN)
     gpio.setup( BANDAS_OUTPUT , gpio.OUT)
 
-    #gpio.setup( BANDAS_INPUT , gpio.IN)
     # Initialize the image classification model
     base_options = core.BaseOptions(file_name='model.tflite', use_coral=False, num_threads=4)
         
@@ -133,7 +129,7 @@ def run() -> None:
                             cv2.imwrite(saveImage('plastico'),image)
                             plastico+=1
                             #procesos.append(72)
-                            material=72
+                            material=80
                             esp_servos.write([material])
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,plastico,score))
@@ -142,7 +138,7 @@ def run() -> None:
                             cv2.imwrite(saveImage('hojalata'),image)
                             hojalata+=1
                             #procesos.append(80)
-                            material=80
+                            material=72
                             esp_servos.write([material])                        
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,hojalata,score))
