@@ -41,7 +41,7 @@ plastico = 0
 hojalata = 0
 desconocido = 0
 fondo = 0
-material = 0
+material = ''
 
 
 
@@ -123,24 +123,24 @@ def run() -> None:
                         if category.category_name == 'aluminio' and score >= 10:
                             cv2.imwrite(saveImage('aluminio'),image)
                             aluminio+=1
-                            material=65
-                            esp_servos.write([material])
+                            material='A'
+                            esp_servos.write(material.encode())
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,aluminio,score))
                             break
                         if category.category_name == 'plastico' and score >= 10:
                             cv2.imwrite(saveImage('plastico'),image)
                             plastico+=1
-                            material=80
-                            esp_servos.write([material])
+                            material='P'
+                            esp_servos.write(material.encode())
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,plastico,score))
                             break
                         if category.category_name == 'hojalata' and score >= 10:
                             cv2.imwrite(saveImage('hojalata'),image)
                             hojalata+=1
-                            material=72
-                            esp_servos.write([material])                            
+                            material= 'H'
+                            esp_servos.write(material.encode())                            
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,hojalata,score))
                             break
