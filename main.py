@@ -121,7 +121,7 @@ def run() -> None:
                     for idx, category in enumerate(categories.classifications[0].categories):
                         score = round(category.score, 2) * 100
                         if category.category_name == 'aluminio' and score >= 10:
-                            #cv2.imwrite(saveImage('aluminio'),image)
+                            cv2.imwrite(saveImage('aluminio'),image)
                             aluminio+=1
                             material=65
                             esp_servos.write([material])
@@ -129,7 +129,7 @@ def run() -> None:
                             print('{} {}: {}%'.format(category.category_name,aluminio,score))
                             break
                         if category.category_name == 'plastico' and score >= 10:
-                            #cv2.imwrite(saveImage('plastico'),image)
+                            cv2.imwrite(saveImage('plastico'),image)
                             plastico+=1
                             material=80
                             esp_servos.write([material])
@@ -137,7 +137,7 @@ def run() -> None:
                             print('{} {}: {}%'.format(category.category_name,plastico,score))
                             break
                         if category.category_name == 'hojalata' and score >= 10:
-                            #cv2.imwrite(saveImage('hojalata'),image)
+                            cv2.imwrite(saveImage('hojalata'),image)
                             hojalata+=1
                             material=72
                             esp_servos.write([material])                            
