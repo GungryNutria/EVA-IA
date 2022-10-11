@@ -122,28 +122,25 @@ def run() -> None:
                         score = round(category.score, 2) * 100
                         if category.category_name == 'aluminio' and score >= 10:
                             #cv2.imwrite(saveImage('aluminio'),image)
-                            #aluminio+=1
-                            #procesos.append(65)
-                            #material=65
-                            #esp_servos.write([material])
+                            aluminio+=1
+                            material=65
+                            esp_servos.write([material])
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,aluminio,score))
                             break
                         if category.category_name == 'plastico' and score >= 10:
                             #cv2.imwrite(saveImage('plastico'),image)
-                            #plastico+=1
-                            #procesos.append(72)
-                            #material=80
-                            #esp_servos.write([material])
+                            plastico+=1
+                            material=80
+                            esp_servos.write([material])
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,plastico,score))
                             break
                         if category.category_name == 'hojalata' and score >= 10:
                             #cv2.imwrite(saveImage('hojalata'),image)
-                            #hojalata+=1
-                            #procesos.append(80)
-                            #material=72
-                            #esp_servos.write([material])                            
+                            hojalata+=1
+                            material=72
+                            esp_servos.write([material])                            
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,hojalata,score))
                             break
