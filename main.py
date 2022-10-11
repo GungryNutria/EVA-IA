@@ -1,6 +1,8 @@
 from multiprocessing.pool import RUN
 import sys
 import time
+
+from numpy import mat
 import serial
 import cv2
 import logging
@@ -124,7 +126,7 @@ def run() -> None:
                             aluminio+=1
                             #procesos.append(65)
                             material=65
-                            esp_servos.write(b'A')
+                            esp_servos.write([material])
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,aluminio,score))
                             break
@@ -132,8 +134,8 @@ def run() -> None:
                             cv2.imwrite(saveImage('plastico'),image)
                             plastico+=1
                             #procesos.append(72)
-                            material=72
-                            esp_servos.write(b'P')
+                            material=80
+                            esp_servos.write([material])
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,plastico,score))
                             break
@@ -141,8 +143,8 @@ def run() -> None:
                             cv2.imwrite(saveImage('hojalata'),image)
                             hojalata+=1
                             #procesos.append(80)
-                            material=80
-                            esp_servos.write(b'H')                            
+                            material=72
+                            esp_servos.write([material])                            
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,hojalata,score))
                             break
@@ -165,7 +167,7 @@ def run() -> None:
                     cap.release()
                     cv2.waitKey(0) # waits until a key is pressed
                     cv2.destroyAllWindows()
-                time.leep(2)
+                time.sleep(2)
             except:
                 logging.error("No se pudo prender la camara")
                 #Mando Error de que la camara no funciona
