@@ -53,8 +53,9 @@ material = ''
 try:
     esp_master = serial.Serial('/dev/ttyUSB0',115200)
     esp_servos = serial.Serial('/dev/ttyUSB1',115200)
-    esp_celdas = serial.Serial('/dev/ttyUSB2',115200)
-    esp_ultras = serial.Serial('/dev/ttyUSB3',115200)
+    esp_leds = serial.Serial('/dev/ttyUSB2',115200)
+    esp_motores = serial.Serial('/dev/ttyUSB3',115200)
+    esp_celdas = serial.Serial('/dev/ttyUSB4',115200)
     #esp_errores = serial.Serial('/dev/ttyUSB3',115200)
     
     logging.info("Las conexiones son correctas")
@@ -126,7 +127,9 @@ def run() -> None:
                             cv2.imwrite(saveImage('aluminio'),image)
                             aluminio+=1
                             material='A'
+                            esp_master.write(material.encode())
                             esp_servos.write(material.encode())
+                            esp_leds.write(material.encode())
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,aluminio,score))
                             break
@@ -134,7 +137,9 @@ def run() -> None:
                             cv2.imwrite(saveImage('plastico'),image)
                             plastico+=1
                             material='P'
+                            esp_master.write(material.encode())
                             esp_servos.write(material.encode())
+                            esp_leds.write(material.encode())
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,plastico,score))
                             break
@@ -142,7 +147,9 @@ def run() -> None:
                             cv2.imwrite(saveImage('hojalata'),image)
                             hojalata+=1
                             material= 'H'
-                            esp_servos.write(material.encode())                            
+                            esp_master.write(material.encode())
+                            esp_servos.write(material.encode())
+                            esp_leds.write(material.encode())   
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,hojalata,score))
                             break
