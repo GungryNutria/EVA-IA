@@ -32,9 +32,14 @@ FOTO_HOJALATA = 21
 BANDAS_OUTPUT = 23
 BANDAS_INPUT = 24
 
+TARJETA_UUID = ''
+PESOS = ''
+CONTENEDORES = ''
+
 procesos = []
 materiales = []
 
+pesos = ''
 asci = ''
 aluminio = 0
 plastico = 0
@@ -46,11 +51,10 @@ material = ''
 
 
 try:
-    esp_nextion = serial.Serial('/dev/ttyUSB0',115200)
-    #esp_servos = serial.Serial('/dev/ttyUSB2',115200)
+    esp_master = serial.Serial('/dev/ttyUSB0',115200)
     esp_servos = serial.Serial('/dev/ttyUSB1',115200)
-    #esp_celdas = serial.Serial('/dev/ttyUSB4',115200)
-    #esp_ultras = serial.Serial('/dev/ttyUSB0',115200)
+    esp_celdas = serial.Serial('/dev/ttyUSB2',115200)
+    esp_ultras = serial.Serial('/dev/ttyUSB3',115200)
     #esp_errores = serial.Serial('/dev/ttyUSB3',115200)
     
     logging.info("Las conexiones son correctas")
@@ -70,23 +74,21 @@ def saveImage(material):
         logging.error("No se pudo generar la imagen")
 
 def run() -> None:
-    global aluminio, plastico, hojalata, fondo, procesos, material, asci, bandas, material
-    gpio.setup( BTN_START , gpio.IN)
-    gpio.setup( BTN_CLOSE , gpio.IN)
-    gpio.setup( BANDAS_OUTPUT , gpio.OUT)
+    global aluminio, plastico, hojalata, fondo, procesos, material, asci, bandas, material, PESOS,TARJETA_UUID
+    
 
     #gpio.setup( BANDAS_INPUT , gpio.IN)
     # Initialize the image classification model
     base_options = core.BaseOptions(file_name='model.tflite', use_coral=False, num_threads=4)
-        
     # Enable Coral by this setting
     classification_options = processor.ClassificationOptions(max_results=3, score_threshold=0.0)
     options = vision.ImageClassifierOptions(base_options=base_options, classification_options=classification_options)
     
     classifier = vision.ImageClassifier.create_from_options(options)
 
-    print("Esperando respuesta")
+    print("HILO IA")
         
+    
     IA_STATUS_ON = False
     IA_STATUS_OFF = False
         
@@ -153,6 +155,7 @@ def run() -> None:
                     
                     if IA_STATUS_OFF:
                         IA_STATUS_ON = False
+                        print('{} {}'.format(TARJETA_UUID,PESOS))
                         gpio.output(BANDAS_OUTPUT,0)
                     
                     cap.release()
@@ -168,68 +171,52 @@ def run() -> None:
             gpio.output(BANDAS_OUTPUT,0)  
             IA_STATUS_OFF = False               
        
-def readContainers() -> None:
+def threadContainers() -> None:
+    print('HILO CONTENEDORES')
+    global CONTENEDORES
     while True:
         try:
-            operacion = ''
-            esp_leido = str(esp_contenedores.readline()).strip()
-            print(esp_leido)
-            for i in range(0,len(esp_leido)):
-                if esp_leido[i] == "=":
-                    for x in range(i+1,len(esp_leido)):
-                        if esp_leido[x] == "\\":
-                            break
-                        operacion = operacion + esp_leido[x]
-            print(operacion)
-            # esp_nextion.write(operacion.encode(encoding='UTF-8',errors='strict'))
+            if CONTENEDORES == None:
+                CONTENEDORES = esp_ultras.readline().decode('utf-8')
+            else:
+                print(CONTENEDORES)
         except:
-            logging.error("Alguna ESP esta mal conectada")
+            logging.error("ESP Contenedores mal conectada")
             #Mando error
 
-def moveServos() -> None:
-
-    gpio.setup(FOTO_PLASTICO, gpio.IN)
-    gpio.setup(FOTO_ALUMINIO, gpio.IN)
-    gpio.setup(FOTO_HOJALATA, gpio.IN)
-
-    
-
-    global procesos
-    print('Esperando respuesta')
+def threadCeldas() -> None:
+    global PESOS
+    print('Hilo Celdas')
     while True:
-        if gpio.input(FOTO_PLASTICO):
-            print("PLASTICO")
-            for i in range(0,len(procesos)):
-                if procesos[i] == 65:
-                    gpio.output(SERVO_ALUMINIO,1)
-                    time.sleep(1)
-                    gpio.output(SERVO_ALUMINIO,0)
-                    procesos.pop()
-                    break
-        if gpio.input(FOTO_ALUMINIO):
-            print("ALUMINIO")
-            for i in range(0,len(procesos)):
-                if procesos[i] == 72:
-                    gpio.output(SERVO_PLASTICO,1)
-                    time.sleep(1)
-                    gpio.output(SERVO_PLASTICO,0)
-                    procesos.pop()
-                    break
-        if gpio.input(FOTO_HOJALATA):
-            print("HOJALATA")
-            for i in range(0,len(procesos)):
-                if procesos[i] == 80:
-                    gpio.output(SERVO_HOJALATA,1)
-                    time.sleep(1)
-                    gpio.output(SERVO_HOJALATA,0)
-                    procesos.pop()
-                    break        
-            
-            
-    
+        try:
+            if PESOS == None:
+                PESOS = esp_celdas.readline().decode('utf-8')
+            else:
+                print(PESOS)
+        except:
+            logging.error("ESP Celdas mal conectada")
+            #Mando error
+
+def threadMaster() -> None:
+    global TARJETA_UUID
+    print('HILO MASTER')
+    while True:
+        try:
+            if TARJETA_UUID == None:
+                TARJETA_UUID = esp_master.readline().decode('utf-8')
+            else:
+                print(TARJETA_UUID)
+        except:
+            logging.error("ESP Contenedores mal conectada")
+            #Mando error
+
 def main():
     # run()
     gpio.setmode(gpio.BCM)
+    gpio.setup( BTN_START , gpio.IN)
+    gpio.setup( BTN_CLOSE , gpio.IN)
+    gpio.setup( BANDAS_OUTPUT , gpio.OUT)
+    
     ia = threading.Thread(target=run)
     #servos = threading.Thread(target=moveServos)
     # containers = threading.Thread(target=readContainers)
