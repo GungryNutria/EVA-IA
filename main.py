@@ -1,6 +1,7 @@
 from multiprocessing.pool import RUN
 import sys
 import time
+from matplotlib import container
 
 from numpy import mat
 import serial
@@ -130,6 +131,9 @@ def run() -> None:
                             esp_master.write(material.encode())
                             esp_servos.write(material.encode())
                             esp_leds.write(material.encode())
+                            esp_master.flushOutput()
+                            esp_servos.flushOutput()
+                            esp_leds.flushOutput()
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,aluminio,score))
                             break
@@ -140,6 +144,9 @@ def run() -> None:
                             esp_master.write(material.encode())
                             esp_servos.write(material.encode())
                             esp_leds.write(material.encode())
+                            esp_master.flushOutput()
+                            esp_servos.flushOutput()
+                            esp_leds.flushOutput()
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,plastico,score))
                             break
@@ -149,7 +156,10 @@ def run() -> None:
                             material= 'H'
                             esp_master.write(material.encode())
                             esp_servos.write(material.encode())
-                            esp_leds.write(material.encode())   
+                            esp_leds.write(material.encode())
+                            esp_master.flushOutput()
+                            esp_servos.flushOutput()
+                            esp_leds.flushOutput()
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,hojalata,score))
                             break
@@ -225,12 +235,16 @@ def main():
     gpio.setup( BANDAS_OUTPUT , gpio.OUT)
     
     ia = threading.Thread(target=run)
+    #containers = threading.Thread(target=threadContainers)
+    #celdas = threading.Thread(target=threadCeldas)
+    #master = threading.Thread(target=threadMaster)
     #servos = threading.Thread(target=moveServos)
     # containers = threading.Thread(target=readContainers)
     
     ia.start()
-    #servos.start()
-    # containers.start()
+    #containers.start()
+    #celdas.start()
+    #master.start()
 
 if __name__ == '__main__':
     main()
