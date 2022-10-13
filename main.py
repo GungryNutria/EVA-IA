@@ -1,8 +1,6 @@
 from multiprocessing.pool import RUN
 import sys
 import time
-from matplotlib import container
-
 from numpy import mat
 import serial
 import cv2
@@ -134,6 +132,9 @@ def run() -> None:
                             esp_master.flushOutput()
                             esp_servos.flushOutput()
                             esp_leds.flushOutput()
+                            esp_master.flushInput()
+                            esp_servos.flushInput()
+                            esp_leds.flushInput()
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,aluminio,score))
                             break
@@ -147,6 +148,10 @@ def run() -> None:
                             esp_master.flushOutput()
                             esp_servos.flushOutput()
                             esp_leds.flushOutput()
+                            esp_master.flushInput()
+                            esp_servos.flushInput()
+                            esp_leds.flushInput()
+
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,plastico,score))
                             break
@@ -160,6 +165,9 @@ def run() -> None:
                             esp_master.flushOutput()
                             esp_servos.flushOutput()
                             esp_leds.flushOutput()
+                            esp_master.flushInput()
+                            esp_servos.flushInput()
+                            esp_leds.flushInput()
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,hojalata,score))
                             break
