@@ -172,6 +172,7 @@ def run() -> None:
                     esp_leds.flush()                    
                     if IA_STATUS_OFF:
                         IA_STATUS_ON = False
+                        TARJETA_UUID = esp_master.readline().decode('utf-8').strip()
                         print('{} {}'.format(TARJETA_UUID,PESOS))
                         gpio.output(BANDAS_OUTPUT,0)
                     
@@ -219,10 +220,8 @@ def threadMaster() -> None:
     print('HILO MASTER')
     while True:
         try:
-            if TARJETA_UUID == None:
-                TARJETA_UUID = esp_master.readline().decode('utf-8')
-            else:
-                print(TARJETA_UUID)
+            TARJETA_UUID = esp_master.readline().decode('utf-8')
+            print(TARJETA_UUID)
         except:
             logging.error("ESP Contenedores mal conectada")
             #Mando error
@@ -236,14 +235,14 @@ def main():
     
     ia = threading.Thread(target=run)
     #containers = threading.Thread(target=threadContainers)
-    #celdas = threading.Thread(target=threadCeldas)
+    celdas = threading.Thread(target=threadCeldas)
     #master = threading.Thread(target=threadMaster)
     #servos = threading.Thread(target=moveServos)
     # containers = threading.Thread(target=readContainers)
     
     ia.start()
     #containers.start()
-    #celdas.start()
+    celdas.start()
     #master.start()
 
 if __name__ == '__main__':
