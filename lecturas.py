@@ -13,4 +13,4 @@ while True:
                 operacion = operacion + esp_leido[x]
     esp2.write(operacion.encode(encoding='UTF-8',errors='strict'))
     
-    
+ 

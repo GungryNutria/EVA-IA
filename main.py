@@ -53,14 +53,32 @@ try:
     esp_master = serial.Serial('/dev/ttyUSB0',115200)
     esp_servos = serial.Serial('/dev/ttyUSB1',115200)
     esp_leds = serial.Serial('/dev/ttyUSB2',115200)
-    esp_motores = serial.Serial('/dev/ttyUSB3',115200)
-    esp_celdas = serial.Serial('/dev/ttyUSB4',115200)
-    esp_ultras = serial.Serial('/dev/ttyUSB5',115200)
-    esp_errores = serial.Serial('/dev/ttyUSB6',115200)
+    #esp_celdas = serial.Serial('/dev/ttyUSB3',115200)
+    #esp_motores = serial.Serial('/dev/ttyUSB3',115200)
+    #esp_ultras = serial.Serial('/dev/ttyUSB5',115200)
+    #esp_errores = serial.Serial('/dev/ttyUSB6',115200)
     logging.info("Las conexiones son correctas")
 except:
     logging.error("Esp32 Desconectada")
     # mando error a el servidor
+
+def closeSerial():
+    esp_master.close()
+    esp_servos.close()
+    esp_leds.close()
+    esp_master.close()
+
+def openSerial():
+    esp_master.open()
+    esp_servos.open()
+    esp_leds.open()
+    esp_master.open()
+
+def getTarjeta():
+    pass
+
+def pesos():
+    esp_celdas.readline()
 
 def saveImage(material):
     try:
@@ -121,6 +139,7 @@ def run() -> None:
                     categories = classifier.classify(tensor_image)
 
                     for idx, category in enumerate(categories.classifications[0].categories):
+                        openSerial()
                         score = round(category.score, 2) * 100
                         if category.category_name == 'aluminio' and score >= 10:
                             cv2.imwrite(saveImage('aluminio'),image)
@@ -169,7 +188,9 @@ def run() -> None:
                     esp_leds.flushInput()
                     esp_master.flush()
                     esp_servos.flush()
-                    esp_leds.flush()                    
+                    esp_leds.flush()
+
+                    closeSerial() 
                     if IA_STATUS_OFF:
                         IA_STATUS_ON = False
                         TARJETA_UUID = esp_master.readline().decode('utf-8').strip()
@@ -202,30 +223,6 @@ def threadContainers() -> None:
             logging.error("ESP Contenedores mal conectada")
             #Mando error
 
-def threadCeldas() -> None:
-    global PESOS
-    print('Hilo Celdas')
-    while True:
-        try:
-            if PESOS == None:
-                PESOS = esp_celdas.readline().decode('utf-8')
-            else:
-                print(PESOS)
-        except:
-            logging.error("ESP Celdas mal conectada")
-            #Mando error
-
-def threadMaster() -> None:
-    global TARJETA_UUID
-    print('HILO MASTER')
-    while True:
-        try:
-            TARJETA_UUID = esp_master.readline().decode('utf-8')
-            print(TARJETA_UUID)
-        except:
-            logging.error("ESP Contenedores mal conectada")
-            #Mando error
-
 def main():
     # run()
     gpio.setmode(gpio.BCM)
@@ -235,14 +232,14 @@ def main():
     
     ia = threading.Thread(target=run)
     #containers = threading.Thread(target=threadContainers)
-    celdas = threading.Thread(target=threadCeldas)
+    #celdas = threading.Thread(target=threadCeldas)
     #master = threading.Thread(target=threadMaster)
     #servos = threading.Thread(target=moveServos)
     # containers = threading.Thread(target=readContainers)
     
     ia.start()
     #containers.start()
-    celdas.start()
+    #celdas.start()
     #master.start()
 
 if __name__ == '__main__':
