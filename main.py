@@ -129,12 +129,7 @@ def run() -> None:
                             esp_master.write(material.encode())
                             esp_servos.write(material.encode())
                             esp_leds.write(material.encode())
-                            esp_master.flushOutput()
-                            esp_servos.flushOutput()
-                            esp_leds.flushOutput()
-                            esp_master.flushInput()
-                            esp_servos.flushInput()
-                            esp_leds.flushInput()
+                    
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,aluminio,score))
                             break
@@ -145,13 +140,6 @@ def run() -> None:
                             esp_master.write(material.encode())
                             esp_servos.write(material.encode())
                             esp_leds.write(material.encode())
-                            esp_master.flushOutput()
-                            esp_servos.flushOutput()
-                            esp_leds.flushOutput()
-                            esp_master.flushInput()
-                            esp_servos.flushInput()
-                            esp_leds.flushInput()
-
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,plastico,score))
                             break
@@ -162,12 +150,7 @@ def run() -> None:
                             esp_master.write(material.encode())
                             esp_servos.write(material.encode())
                             esp_leds.write(material.encode())
-                            esp_master.flushOutput()
-                            esp_servos.flushOutput()
-                            esp_leds.flushOutput()
-                            esp_master.flushInput()
-                            esp_servos.flushInput()
-                            esp_leds.flushInput()
+                            
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,hojalata,score))
                             break
@@ -178,6 +161,15 @@ def run() -> None:
                             print(category.category_name + ': ' + str(fondo)+': '+ str(score) +'%')
                             break
                     
+                    esp_master.flushOutput()
+                    esp_servos.flushOutput()
+                    esp_leds.flushOutput()
+                    esp_master.flushInput()
+                    esp_servos.flushInput()
+                    esp_leds.flushInput()
+                    esp_master.flush()
+                    esp_servos.flush()
+                    esp_leds.flush()                    
                     if IA_STATUS_OFF:
                         IA_STATUS_ON = False
                         print('{} {}'.format(TARJETA_UUID,PESOS))
@@ -186,7 +178,7 @@ def run() -> None:
                     cap.release()
                     cv2.waitKey(0) # waits until a key is pressed
                     cv2.destroyAllWindows()
-                time.sleep(2)
+                time.sleep(1)
             except:
                 logging.error("No se pudo prender la camara")
                 #Mando Error de que la camara no funciona
