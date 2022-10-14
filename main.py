@@ -1,3 +1,4 @@
+from curses.ascii import NUL
 from multiprocessing.pool import RUN
 import sys
 import time
@@ -140,7 +141,7 @@ def run() -> None:
     classifier = vision.ImageClassifier.create_from_options(options)
 
     print("ESPERANDO RESPUESTA")
-        
+    TARJETA_UUID = getTarjeta()
     
     IA_STATUS_ON = False
     IA_STATUS_OFF = False
@@ -150,7 +151,10 @@ def run() -> None:
         IA_STATUS_ON = gpio.input(BTN_START)
         
         while IA_STATUS_ON:
-            
+            if TARJETA_UUID == '':
+                TARJETA_UUID = getTarjeta()
+            else:
+                print(TARJETA_UUID)   
             gpio.output(BANDAS_OUTPUT,1)
             
             
@@ -239,15 +243,22 @@ def run() -> None:
             except:
                 logging.error("No se pudo prender la camara")
                 gpio.output(BANDAS_OUTPUT,0)
+                IA_STATUS_ON = False
+                IA_STATUS_OFF = True
+                os.system(f'java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {0.05*plastico} {0.03*aluminio} {0.05*hojalata}')
                 #Mando Error de que la IA no funciona
 
         while IA_STATUS_OFF:
             print('RETIRE TARJETA')
             gpio.output(BANDAS_OUTPUT,0)
-            TARJETA_UUID = getTarjeta()
             PESOS = getCeldas().split(sep=" ")
-            print(f"java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {PESOS[0]} {PESOS[1]} {PESOS[2]}")
-            os.system(f'java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {PESOS[0]} {PESOS[1]} {PESOS[2]}')
+            
+            if PESOS == None:
+                print(f"java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {0.02*plastico} {0.03*aluminio} {0.05*hojalata}")
+                os.system(f'java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {0.05*plastico} {0.03*aluminio} {0.05*hojalata}')
+            else:
+                print(f"java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {PESOS[0]} {PESOS[1]} {PESOS[2]}")
+                os.system(f'java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {PESOS[0]} {PESOS[1]} {PESOS[2]}')
             IA_STATUS_OFF = False
 
 def main():
