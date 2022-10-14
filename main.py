@@ -151,7 +151,7 @@ def run() -> None:
         IA_STATUS_ON = gpio.input(BTN_START)
         if IA_STATUS_ON:
             #COMANDO
-            os.system("java -jar Recicaldor-comando.jar status 1")
+            os.system("java -jar Reciclador-comando.jar status 1")
         while IA_STATUS_ON:
             if TARJETA_UUID == None:
                 getTarjeta()
