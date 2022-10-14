@@ -75,15 +75,18 @@ def openSerial():
     esp_leds.open()
 
 def getTarjeta():
-    
-    tarjeta = ''
-    esp_leido = str(esp_master.read(100)).strip()
-    for i in range(0,len(esp_leido)):
-        if esp_leido[i] == "=":
-            for x in range(i+1,len(esp_leido)):
-                if esp_leido[x] == "\\":
-                    break
-                tarjeta = tarjeta + esp_leido[x]
+    palabra = ""
+    rawString = str(esp_master.readline().strip())
+    for i in rawString:
+        if i.isalpha():
+            continue
+        else:
+            if i == '=':
+                continue
+            else:
+                if i != "'":
+                    palabra += i
+    return palabra
         
         
 def getCeldas():
