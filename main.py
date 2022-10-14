@@ -77,7 +77,7 @@ def openSerial():
 def getTarjeta():
     
     tarjeta = ''
-    esp_leido = str(esp_master.readline()).strip()
+    esp_leido = str(esp_master.read(100)).strip()
     for i in range(0,len(esp_leido)):
         if esp_leido[i] == "=":
             for x in range(i+1,len(esp_leido)):
