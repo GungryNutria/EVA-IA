@@ -247,7 +247,7 @@ def run() -> None:
             gpio.output(BANDAS_OUTPUT,0)
             TARJETA_UUID = getTarjeta()
             PESOS = getCeldas().split(sep=" ")
-            print(f'tarjeta: {TARJETA_UUID}, y pesos: {PESOS[0]} {PESOS[1]} {PESOS[2]}')
+            print(f"java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {PESOS[0]} {PESOS[1]} {PESOS[2]}")
             os.system(f'java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {PESOS[0]} {PESOS[1]} {PESOS[2]}')
             os.system('java -jar Reciclador-comando.jar status 0')
             IA_STATUS_OFF = False
