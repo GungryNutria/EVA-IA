@@ -75,19 +75,16 @@ def openSerial():
     esp_leds.open()
 
 def getTarjeta():
-    while True:
-        TARJETA_UUID = ''
-        esp_leido = str(esp_master.readline()).strip()
-        for i in range(0,len(esp_leido)):
-            if esp_leido[i] == "=":
-                for x in range(i+1,len(esp_leido)):
-                    if esp_leido[x] == "\\":
-                        break
-                    TARJETA_UUID = TARJETA_UUID + esp_leido[x]
-        if len(TARJETA_UUI) >= 10:
-            break
-        else:
-            print('No detecto tarjeta')
+    
+    tarjeta = ''
+    esp_leido = str(esp_master.readline()).strip()
+    for i in range(0,len(esp_leido)):
+        if esp_leido[i] == "=":
+            for x in range(i+1,len(esp_leido)):
+                if esp_leido[x] == "\\":
+                    break
+                tarjeta = tarjeta + esp_leido[x]
+        
         
 def getCeldas():
     palabra = ""
@@ -246,6 +243,7 @@ def run() -> None:
                 gpio.output(BANDAS_OUTPUT,0)
                 IA_STATUS_ON = False
                 IA_STATUS_OFF = True
+                TARJETA_UUID = getTarjeta()
                 os.system(f'java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {0.05*plastico} {0.03*aluminio} {0.05*hojalata}')
                 TARJETA_UUID = '';
                 #Mando Error de que la IA no funciona
@@ -254,7 +252,7 @@ def run() -> None:
             print('RETIRE TARJETA')
             gpio.output(BANDAS_OUTPUT,0)
             PESOS = getCeldas().split(sep=" ")
-            
+            TARJETA_UUID = getTarjeta()
             print(f"java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {0.02*plastico} {0.03*aluminio} {0.05*hojalata}")
             os.system(f'java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {0.02*plastico} {0.03*aluminio} {0.05*hojalata}')
             TARJETA_UUID = ''
