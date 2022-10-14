@@ -231,8 +231,6 @@ def run() -> None:
                     #closeSerial() 
                     if IA_STATUS_OFF:
                         IA_STATUS_ON = False
-                        TARJETA_UUID = esp_master.readline().decode('utf-8').strip()
-                        
                         gpio.output(BANDAS_OUTPUT,0)
                     
                     cap.release()
@@ -247,7 +245,9 @@ def run() -> None:
         while IA_STATUS_OFF:
             print('RETIRE TARJETA')
             gpio.output(BANDAS_OUTPUT,0)
-            print("os.system(f'java -jar saldo {getTarjeta()} {getCeldas()}')")
+            TARJETA_UUID = getTarjeta()
+            PESOS = getCeldas()
+            os.system(f'java -jar saldo {TARJETA_UUID} {PESOS}')
             os.system('java -jar Reciclador-comando.jar status 0')
             IA_STATUS_OFF = False
 
