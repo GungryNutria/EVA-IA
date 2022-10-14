@@ -149,7 +149,7 @@ def run() -> None:
     while True:
         bandas = 0
         IA_STATUS_ON = gpio.input(BTN_START)
-        if IA_STATUS_OFF:
+        if IA_STATUS_ON:
             #COMANDO
             os.system("java -jar Recicaldor-comando.jar status 1")
         while IA_STATUS_ON:
