@@ -75,19 +75,20 @@ def openSerial():
     esp_leds.open()
 
 def getTarjeta():
-    palabra = ""
-    rawString = str(esp_master.readline().strip())
-    for i in rawString:
-        if i.isalpha():
-            continue
+    while True:
+        TARJETA_UUID = ''
+        esp_leido = str(esp_master.readline()).strip()
+        for i in range(0,len(esp_leido)):
+            if esp_leido[i] == "=":
+                for x in range(i+1,len(esp_leido)):
+                    if esp_leido[x] == "\\":
+                        break
+                    TARJETA_UUID = TARJETA_UUID + esp_leido[x]
+        if len(TARJETA_UUID >= 10):
+            break
         else:
-            if i == '=':
-                continue
-            else:
-                if i != "'":
-                    palabra += i
-    return palabra
-
+            print('No detecto tarjeta')
+        
 def getCeldas():
     palabra = ""
     rawString = str(esp_celdas.readline().strip())
@@ -151,8 +152,8 @@ def run() -> None:
         IA_STATUS_ON = gpio.input(BTN_START)
         
         while IA_STATUS_ON:
-            if TARJETA_UUID == '':
-                TARJETA_UUID = getTarjeta()
+            if TARJETA_UUID == None:
+                getTarjeta()
             else:
                 print(TARJETA_UUID)   
             gpio.output(BANDAS_OUTPUT,1)
