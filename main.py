@@ -175,7 +175,7 @@ def run() -> None:
                     categories = classifier.classify(tensor_image)
 
                     for idx, category in enumerate(categories.classifications[0].categories):
-                        openSerial()
+                        #openSerial()
                         score = round(category.score, 2) * 100
                         if category.category_name == 'aluminio' and score >= 10:
                             cv2.imwrite(saveImage('aluminio'),image)
@@ -227,7 +227,7 @@ def run() -> None:
                     esp_servos.flush()
                     esp_leds.flush()
 
-                    closeSerial() 
+                    #closeSerial() 
                     if IA_STATUS_OFF:
                         IA_STATUS_ON = False
                         TARJETA_UUID = esp_master.readline().decode('utf-8').strip()
@@ -247,7 +247,7 @@ def run() -> None:
             print('RETIRE TARJETA')
             gpio.output(BANDAS_OUTPUT,0)
             print("os.system(f'java -jar saldo {getTarjeta()} {getCeldas()}')")
-            os.system('java -jar Reciclador-comando.jar status 1')
+            os.system('java -jar Reciclador-comando.jar status 0')
             IA_STATUS_OFF = False
 
 def main():
