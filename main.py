@@ -147,8 +147,9 @@ def run() -> None:
         
     while True:
         bandas = 0
-        IA_STATUS_ON = gpio.input(BTN_START)        
-        os.system('java -jar Reciclador-comando.jar status 1')
+        IA_STATUS_ON = gpio.input(BTN_START)
+        if IA_STATUS_ON:     
+            os.system('java -jar Reciclador-comando.jar status 1')
         while IA_STATUS_ON:
             
             gpio.output(BANDAS_OUTPUT,1)
