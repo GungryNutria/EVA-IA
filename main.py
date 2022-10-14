@@ -149,7 +149,9 @@ def run() -> None:
     while True:
         bandas = 0
         IA_STATUS_ON = gpio.input(BTN_START)
-        
+        if IA_STATUS_OFF:
+            #COMANDO
+            os.system("java -jar Recicaldor-comando.jar status 1")
         while IA_STATUS_ON:
             if TARJETA_UUID == None:
                 getTarjeta()
@@ -247,6 +249,7 @@ def run() -> None:
                 IA_STATUS_OFF = True
                 TARJETA_UUID = getTarjeta()
                 os.system(f'java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {0.05*plastico} {0.03*aluminio} {0.05*hojalata}')
+                os.system("java -jar Reciclador-comando.jar status 0")
                 TARJETA_UUID = '';
                 #Mando Error de que la IA no funciona
 
@@ -257,6 +260,7 @@ def run() -> None:
             TARJETA_UUID = getTarjeta()
             print(f"java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {0.02*plastico} {0.03*aluminio} {0.05*hojalata}")
             os.system(f'java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {0.02*plastico} {0.03*aluminio} {0.05*hojalata}')
+            os.system("java -jar Reciclador-comando.jar status 0")
             TARJETA_UUID = ''
             IA_STATUS_OFF = False
 
