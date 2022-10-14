@@ -139,7 +139,6 @@ def run() -> None:
     classifier = vision.ImageClassifier.create_from_options(options)
 
     print("ESPERANDO RESPUESTA")
-    TARJETA_UUID = getTarjeta()
     
     IA_STATUS_ON = False
     IA_STATUS_OFF = False
