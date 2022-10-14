@@ -246,6 +246,7 @@ def run() -> None:
                 IA_STATUS_ON = False
                 IA_STATUS_OFF = True
                 os.system(f'java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {0.05*plastico} {0.03*aluminio} {0.05*hojalata}')
+                TARJETA_UUID = '';
                 #Mando Error de que la IA no funciona
 
         while IA_STATUS_OFF:
@@ -255,6 +256,7 @@ def run() -> None:
             
             print(f"java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {0.02*plastico} {0.03*aluminio} {0.05*hojalata}")
             os.system(f'java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {0.02*plastico} {0.03*aluminio} {0.05*hojalata}')
+            TARJETA_UUID = ''
             IA_STATUS_OFF = False
 
 def main():
