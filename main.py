@@ -148,8 +148,10 @@ def run() -> None:
     while True:
         bandas = 0
         IA_STATUS_ON = gpio.input(BTN_START)
-        if IA_STATUS_ON:     
+        
+        if gpio.input(BTN_START):     
             os.system('java -jar Reciclador-comando.jar status 1')
+        
         while IA_STATUS_ON:
             
             gpio.output(BANDAS_OUTPUT,1)
@@ -251,6 +253,7 @@ def run() -> None:
             os.system(f'java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {PESOS[0]} {PESOS[1]} {PESOS[2]}')
             os.system('java -jar Reciclador-comando.jar status 0')
             IA_STATUS_OFF = False
+            IA_STATUS_ON = False
 
 def main():
     # run()
