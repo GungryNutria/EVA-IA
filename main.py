@@ -253,12 +253,8 @@ def run() -> None:
             gpio.output(BANDAS_OUTPUT,0)
             PESOS = getCeldas().split(sep=" ")
             
-            if PESOS == None:
-                print(f"java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {0.02*plastico} {0.03*aluminio} {0.05*hojalata}")
-                os.system(f'java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {0.05*plastico} {0.03*aluminio} {0.05*hojalata}')
-            else:
-                print(f"java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {PESOS[0]} {PESOS[1]} {PESOS[2]}")
-                os.system(f'java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {PESOS[0]} {PESOS[1]} {PESOS[2]}')
+            print(f"java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {0.02*plastico} {0.03*aluminio} {0.05*hojalata}")
+            os.system(f'java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {0.02*plastico} {0.03*aluminio} {0.05*hojalata}')
             IA_STATUS_OFF = False
 
 def main():
