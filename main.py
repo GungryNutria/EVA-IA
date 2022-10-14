@@ -84,7 +84,7 @@ def getTarjeta():
                     if esp_leido[x] == "\\":
                         break
                     TARJETA_UUID = TARJETA_UUID + esp_leido[x]
-        if len(TARJETA_UUID >= 10):
+        if len(TARJETA_UUI) >= 10:
             break
         else:
             print('No detecto tarjeta')
