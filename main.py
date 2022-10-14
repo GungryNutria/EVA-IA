@@ -2,7 +2,8 @@ from multiprocessing.pool import RUN
 import sys
 import time
 from numpy import mat
-import serial
+import serial, os
+# os.system(comando para los servicios)
 import cv2
 import logging
 import RPi.GPIO as gpio
@@ -53,9 +54,9 @@ try:
     esp_master = serial.Serial('/dev/ttyUSB0',115200)
     esp_servos = serial.Serial('/dev/ttyUSB1',115200)
     esp_leds = serial.Serial('/dev/ttyUSB2',115200)
-    #esp_celdas = serial.Serial('/dev/ttyUSB3',115200)
+    esp_celdas = serial.Serial('/dev/ttyUSB3',115200)
+    esp_ultras = serial.Serial('/dev/ttyUSB4',115200)
     #esp_motores = serial.Serial('/dev/ttyUSB3',115200)
-    #esp_ultras = serial.Serial('/dev/ttyUSB5',115200)
     #esp_errores = serial.Serial('/dev/ttyUSB6',115200)
     logging.info("Las conexiones son correctas")
 except:
@@ -66,19 +67,53 @@ def closeSerial():
     esp_master.close()
     esp_servos.close()
     esp_leds.close()
-    esp_master.close()
 
 def openSerial():
     esp_master.open()
     esp_servos.open()
     esp_leds.open()
-    esp_master.open()
 
 def getTarjeta():
-    pass
+    palabra = ""
+    rawString = str(esp_master.readline().strip())
+    for i in rawString:
+        if i.isalpha():
+            continue
+        else:
+            if i == '=':
+                continue
+            else:
+                if i != "'":
+                    palabra += i
+    return palabra
 
-def pesos():
-    esp_celdas.readline()
+def getCeldas():
+    palabra = ""
+    rawString = str(esp_celdas.readline().strip())
+    for i in rawString:
+        if i.isalpha():
+            continue
+        else:
+            if i == '=':
+                continue
+            else:
+                if i != "'":
+                    palabra += i
+    return palabra
+    
+def getUltras():
+    palabra = ""
+    rawString = str(esp_ultras.readline().strip())
+    for i in rawString:
+        if i.isalpha():
+            continue
+        else:
+            if i == '=':
+                continue
+            else:
+                if i != "'":
+                    palabra += i
+    return palabra
 
 def saveImage(material):
     try:
@@ -104,7 +139,7 @@ def run() -> None:
     
     classifier = vision.ImageClassifier.create_from_options(options)
 
-    print("HILO IA")
+    print("ESPERANDO RESPUESTA")
         
     
     IA_STATUS_ON = False
@@ -117,6 +152,7 @@ def run() -> None:
         while IA_STATUS_ON:
             
             gpio.output(BANDAS_OUTPUT,1)
+            print(f"os.system('f'java -jar status 1')")
             
 
             IA_STATUS_OFF = gpio.input(BTN_CLOSE)
@@ -159,6 +195,7 @@ def run() -> None:
                             esp_master.write(material.encode())
                             esp_servos.write(material.encode())
                             esp_leds.write(material.encode())
+                            
                             # esp_nextion.write(respuesta.encode(encoding='UTF-8',errors='strict'))
                             print('{} {}: {}%'.format(category.category_name,plastico,score))
                             break
@@ -194,7 +231,7 @@ def run() -> None:
                     if IA_STATUS_OFF:
                         IA_STATUS_ON = False
                         TARJETA_UUID = esp_master.readline().decode('utf-8').strip()
-                        print('{} {}'.format(TARJETA_UUID,PESOS))
+                        
                         gpio.output(BANDAS_OUTPUT,0)
                     
                     cap.release()
@@ -203,25 +240,15 @@ def run() -> None:
                 time.sleep(1)
             except:
                 logging.error("No se pudo prender la camara")
-                #Mando Error de que la camara no funciona
+                gpio.output(BANDAS_OUTPUT,0)
+                #Mando Error de que la IA no funciona
 
         while IA_STATUS_OFF:
             print('RETIRE TARJETA')
-            gpio.output(BANDAS_OUTPUT,0)  
-            IA_STATUS_OFF = False               
-       
-def threadContainers() -> None:
-    print('HILO CONTENEDORES')
-    global CONTENEDORES
-    while True:
-        try:
-            if CONTENEDORES == None:
-                CONTENEDORES = esp_ultras.readline().decode('utf-8')
-            else:
-                print(CONTENEDORES)
-        except:
-            logging.error("ESP Contenedores mal conectada")
-            #Mando error
+            gpio.output(BANDAS_OUTPUT,0)
+            print("os.system(f'java -jar saldo {getTarjeta()} {getCeldas()}')")
+            print(f"os.system('f'java -jar status 0')")
+            IA_STATUS_OFF = False
 
 def main():
     # run()
@@ -231,16 +258,8 @@ def main():
     gpio.setup( BANDAS_OUTPUT , gpio.OUT)
     
     ia = threading.Thread(target=run)
-    #containers = threading.Thread(target=threadContainers)
-    #celdas = threading.Thread(target=threadCeldas)
-    #master = threading.Thread(target=threadMaster)
-    #servos = threading.Thread(target=moveServos)
-    # containers = threading.Thread(target=readContainers)
     
     ia.start()
-    #containers.start()
-    #celdas.start()
-    #master.start()
 
 if __name__ == '__main__':
     main()
