@@ -1,4 +1,4 @@
-# IMPORTAMOS LIBRERIAS
+# IMPOAR LIBRERIAS
 from curses.ascii import NUL
 from multiprocessing.pool import RUN
 import sys
@@ -16,7 +16,7 @@ from tflite_support.task import core
 from tflite_support.task import processor
 from tflite_support.task import vision
 
-#CONFIGURAMOS UN LOG BASICO PARA LA IA
+#CONFIGURAR UN LOG BASICO PARA LA IA
 logging.basicConfig(filename='eva.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
 
 # PINES DEL BOTON DE START Y STOP
@@ -42,14 +42,14 @@ material = ''
 
 
 try:
-    # CONFIGURAMOS SERIALES
+    # CONFIGURAR SERIALES
     esp_master = serial.Serial('/dev/ttyUSB0',115200)
     esp_servos = serial.Serial('/dev/ttyUSB1',115200)
     esp_leds = serial.Serial('/dev/ttyUSB2',115200)
     logging.info("Las conexiones son correctas")
 except:
     logging.error("Esp32 Desconectada")
-    # MANDO ERROR AL SERVIDOR
+    # MANDAR ERROR AL SERVIDOR
 
 def getTarjeta():
     # METODO PARA OBTENER EL ID DEL ESP MAESTRO
@@ -91,7 +91,7 @@ def run() -> None:
     # INICIALIZACION DEL MODELO DE CLASIFICACION DE IMAGENES
     # ASIGNACION DEL MODELO DE APRENDICAJE Y NUMERO DE HILOS CORRERA
     base_options = core.BaseOptions(file_name='model.tflite', use_coral=False, num_threads=4)
-    # LASIGNACION DE NUMERO DE RESULTADOS QUE SE QUIEREN MOSTRAR Y SU PROMEDIO DE ACEPTACION
+    # ASIGNACION DE NUMERO DE RESULTADOS QUE SE QUIEREN MOSTRAR Y SU PROMEDIO DE ACEPTACION
     classification_options = processor.ClassificationOptions(max_results=3, score_threshold=0.0)
     # ASIGNACION DE CONFIGURACIONES PASADAS
     options = vision.ImageClassifierOptions(base_options=base_options, classification_options=classification_options)
