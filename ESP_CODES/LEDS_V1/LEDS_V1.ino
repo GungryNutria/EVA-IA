@@ -1,3 +1,4 @@
+// DEFINIMOS PINES DE SALIDA
 #define R 23
 #define G 22
 #define B 1
