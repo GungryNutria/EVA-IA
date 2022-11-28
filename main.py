@@ -148,6 +148,7 @@ def run() -> None:
                             cv2.imwrite(saveImage('aluminio'),image)
                             # INCREMENTAR EL CONTADOR DE ALUMINIO
                             aluminio+=1
+                            fondo = 0
                             # MANDAR UN CARACTER A LAS ESP PARA DARLES INSTRUCCIONES DE QUE COMPONENTES MOVER
                             material='A'
                             esp_master.write(material.encode())
@@ -160,6 +161,7 @@ def run() -> None:
                             cv2.imwrite(saveImage('plastico'),image)
                             # INCREMENTAR EL CONTADOR DE PLASTICO
                             plastico+=1
+                            fondo = 0
                             # MANDAR UN CARACTER A LAS ESP PARA DARLES INSTRUCCIONES DE QUE COMPONENTES MOVER
                             material='P'
                             esp_master.write(material.encode())
@@ -172,6 +174,7 @@ def run() -> None:
                             cv2.imwrite(saveImage('hojalata'),image)
                             # INCREMENTAR EL CONTADOR DE HOJALATA
                             hojalata+=1
+                            fondo = 0
                             # MANDAR UN CARACTER A LAS ESP PARA DARLES INSTRUCCIONES DE QUE COMPONENTES MOVER
                             material= 'H'
                             esp_master.write(material.encode())
@@ -180,6 +183,10 @@ def run() -> None:
                             break
                         # SI LA IA DETECTA EL FONDO OSEASE LA BANDA GIRANDO
                         if category.category_name == 'fondo' and score >= 50:
+                            fondo+=1
+                            if fondo == 10:
+                                IA_STATUS_OFF = True
+                                fondo = 0
                             # IMPRIMIR EN CONSOLA SOLO PARA VISUALIZAR
                             print(category.category_name + ': ' + str(fondo)+': '+ str(score) +'%')
                             break
