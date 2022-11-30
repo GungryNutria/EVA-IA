@@ -48,16 +48,15 @@ String codigo;
 
 //**********************************NEXTION*************************************
 //OBJETOS NEXTION
-NexButton procesoBtn = NexButton(0,2,"b0"); //COLOCAR IDS +++++
-NexButton saldoBtn = NexButton(0,3,"b1");
-NexButton finalBtn = NexButton(1,0,"b2");
-NexText labelTarjeta = NexText(0,1,"t0");
+NexButton procesoBtn = NexButton(0,1,"b0"); //COLOCAR IDS +++++
+NexButton saldoBtn = NexButton(0,2,"b1");
+NexText labelTarjeta = NexText(0,3,"t0");
 NexPage page0 = NexPage(0,0,"page0"); //PASAR PAGINA DE PROCESO++++++++++
 //PROCESOS OBJ
-NexText labelproceso = NexText(1,6,"t5");
 NexText plasticos = NexText(1,1,"t0");
 NexText aluminio = NexText(1,2,"t1");
 NexText metal = NexText(1,3,"t2");
+NexButton finalBtn = NexButton(1,4,"b0");
 NexPage page1 = NexPage(1,1,"page1"); //PASAR PAGINA DE SALDO++++++++++
 //SALDOS OBJ
 NexPage page2 = NexPage(2,0,"page2");
@@ -196,15 +195,15 @@ void proceso(void*ptr){
   digitalWrite(LED,HIGH);
          
    
-   do{ //
+  // do{ //
     
-    labelTarjeta.setText("Coloca tu tarjeta"); 
-    GLOBAL_ID = IDTarjeta();
-   }while(GLOBAL_ID == "");
+  //  labelTarjeta.setText("Coloca tu tarjeta"); 
+  //  GLOBAL_ID = IDTarjeta();
+  //}while(GLOBAL_ID == "");
   
   //INICIO DEL PROCESO ....................................
   page1.show(); //CAMBIAR PAGINA A PROCESO
-  labelproceso.setText("Presiona el boton rojo para terminar");
+  //labelproceso.setText("Presiona el boton rojo para terminar");
 
   //SEÑAL DE INICIO ESCLAVOS Y RASP
   digitalWrite(startSignal,HIGH);
@@ -286,8 +285,9 @@ void loop() {
           break;
         }
       material = 'F';
-        
     }
+  }else{
+    digitalWrite(startSignal,LOW);
   }
   nexLoop(nex_listen_list);
   

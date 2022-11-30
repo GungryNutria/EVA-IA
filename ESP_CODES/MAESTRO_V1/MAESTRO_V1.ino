@@ -45,12 +45,12 @@ String codigo;
 
 //**********************************NEXTION*************************************
 //OBJETOS NEXTION
-NexButton procesoBtn = NexButton(0,2,"b0"); //COLOCAR IDS +++++
-NexButton saldoBtn = NexButton(0,3,"b1");
-NexText labelTarjeta = NexText(0,1,"t0");
+NexButton procesoBtn = NexButton(0,1,"b0"); //COLOCAR IDS +++++
+NexButton saldoBtn = NexButton(0,2,"b1");
+NexText labelTarjeta = NexText(0,3,"t0");
 NexPage page0 = NexPage(0,0,"page0"); //PASAR PAGINA DE PROCESO++++++++++
 //PROCESOS OBJ
-NexText labelproceso = NexText(1,6,"t5");
+
 NexText plasticos = NexText(1,1,"t0");
 NexText aluminio = NexText(1,2,"t1");
 NexText metal = NexText(1,3,"t2");
