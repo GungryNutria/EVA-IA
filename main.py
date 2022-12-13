@@ -41,15 +41,15 @@ material = ''
 
 
 
-try:
-    # CONFIGURAR SERIALES
-    esp_master = serial.Serial('/dev/ttyUSB0',115200)
-    esp_servos = serial.Serial('/dev/ttyUSB1',115200)
-    esp_leds = serial.Serial('/dev/ttyUSB2',115200)
-    logging.info("Las conexiones son correctas")
-except:
-    logging.error("Esp32 Desconectada")
-    # MANDAR ERROR AL SERVIDOR
+# try:
+#     # CONFIGURAR SERIALES
+#     esp_master = serial.Serial('/dev/ttyUSB0',115200)
+#     esp_servos = serial.Serial('/dev/ttyUSB1',115200)
+#     esp_leds = serial.Serial('/dev/ttyUSB2',115200)
+#     logging.info("Las conexiones son correctas")
+# except:
+#     logging.error("Esp32 Desconectada")
+#     # MANDAR ERROR AL SERVIDOR
 
 def getTarjeta():
     # METODO PARA OBTENER EL ID DEL ESP MAESTRO
@@ -108,8 +108,8 @@ def run() -> None:
         bandas = 0
         IA_STATUS_ON = gpio.input(BTN_START)
         # SI SE RECIBE UN PULSO ALTO DEL ESP MAESTRO SE MANDARA A ACTUALIZAR EL ESTATUS DE LA MAQUINA A EL SERVIDOR
-        if IA_STATUS_ON:
-            os.system("java -jar Reciclador-comando.jar status 1")
+        #if IA_STATUS_ON:
+            #os.system("java -jar Reciclador-comando.jar status 1")
         #MIENTRAS EL ESTATUS SEA DE ENCENDIDO 
         while IA_STATUS_ON:
             # MANDAR A CORRER LAS BANDAS  
@@ -151,9 +151,9 @@ def run() -> None:
                             fondo = 0
                             # MANDAR UN CARACTER A LAS ESP PARA DARLES INSTRUCCIONES DE QUE COMPONENTES MOVER
                             material='A'
-                            esp_master.write(material.encode())
-                            esp_servos.write(material.encode())
-                            esp_leds.write(material.encode())
+                            # esp_master.write(material.encode())
+                            # esp_servos.write(material.encode())
+                            # esp_leds.write(material.encode())
                             break
                         # SI EL MATERIAL ES PLASTICO Y SU PORCENTAJE ES MAYOR AL 60% DE ACERTACION
                         if category.category_name == 'plastico' and score >= 10:
@@ -164,9 +164,9 @@ def run() -> None:
                             fondo = 0
                             # MANDAR UN CARACTER A LAS ESP PARA DARLES INSTRUCCIONES DE QUE COMPONENTES MOVER
                             material='P'
-                            esp_master.write(material.encode())
-                            esp_servos.write(material.encode())
-                            esp_leds.write(material.encode())
+                            # esp_master.write(material.encode())
+                            # esp_servos.write(material.encode())
+                            # esp_leds.write(material.encode())
                             break
                         # SI EL MATERIAL ES PLASTICO Y SU PORCENTAJE ES MAYOR AL 60% DE ACERTACION
                         if category.category_name == 'hojalata' and score >= 10:
@@ -177,9 +177,9 @@ def run() -> None:
                             fondo = 0
                             # MANDAR UN CARACTER A LAS ESP PARA DARLES INSTRUCCIONES DE QUE COMPONENTES MOVER
                             material= 'H'
-                            esp_master.write(material.encode())
-                            esp_servos.write(material.encode())
-                            esp_leds.write(material.encode())
+                            # esp_master.write(material.encode())
+                            # esp_servos.write(material.encode())
+                            # esp_leds.write(material.encode())
                             break
                         # SI LA IA DETECTA EL FONDO OSEASE LA BANDA GIRANDO
                         if category.category_name == 'fondo' and score >= 50:
@@ -191,15 +191,15 @@ def run() -> None:
                             print(category.category_name + ': ' + str(fondo)+': '+ str(score) +'%')
                             break
                     # LIMPIAR EL BUFFER DE LOS SERIALES
-                    esp_master.flushOutput()
-                    esp_servos.flushOutput()
-                    esp_leds.flushOutput()
-                    esp_master.flushInput()
-                    esp_servos.flushInput()
-                    esp_leds.flushInput()
-                    esp_master.flush()
-                    esp_servos.flush()
-                    esp_leds.flush()
+                    # esp_master.flushOutput()
+                    # esp_servos.flushOutput()
+                    # esp_leds.flushOutput()
+                    # esp_master.flushInput()
+                    # esp_servos.flushInput()
+                    # esp_leds.flushInput()
+                    # esp_master.flush()
+                    # esp_servos.flush()
+                    # esp_leds.flush()
 
                     # SI ES PRESIONADO EL BOTON ROJO 
                     if IA_STATUS_OFF:
@@ -225,9 +225,9 @@ def run() -> None:
                 # OBTENER EL ID DE LA TARJETA
                 TARJETA_UUID = getTarjeta()
                 # PUBLICAR SALDOS QUE SE ALCANZARON A ESCANEAR
-                os.system(f'java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {0.05*plastico} {0.03*aluminio} {0.05*hojalata}')
+                # os.system(f'java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {0.05*plastico} {0.03*aluminio} {0.05*hojalata}')
                 # CAMBIAR EL ESTATUS DE LA MAQUINA
-                os.system("java -jar Reciclador-comando.jar status 0")
+                #os.system("java -jar Reciclador-comando.jar status 0")
                 TARJETA_UUID = ''
 
         # MIENTRAS EL ESTATUS DE LA IA SEA APAGADO
@@ -237,9 +237,9 @@ def run() -> None:
             # OBTENER EL ID DE LA TARJETA
             TARJETA_UUID = getTarjeta()
             # MANDAR A PUBLICAR SALDOS
-            os.system(f'java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {0.02*plastico} {0.03*aluminio} {0.05*hojalata}')
+            #os.system(f'java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {0.02*plastico} {0.03*aluminio} {0.05*hojalata}')
             # CAMBIAR EL ESTATUS DE LA MAQUINA
-            os.system("java -jar Reciclador-comando.jar status 0")
+            #os.system("java -jar Reciclador-comando.jar status 0")
             # LIMPIAR LA VARIABLE TARJETA
             TARJETA_UUID = ''
             # CAMBIAR EL ESTATUS DE IA CERRADA PARA QUE NO CORRA OTRO CICLO
