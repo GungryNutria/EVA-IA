@@ -171,9 +171,9 @@ def run() -> None:
                             print('{} {}: {}'.format('Plastico', aluminio, score))
                             break
                         # SI EL MATERIAL ES PLASTICO Y SU PORCENTAJE ES MAYOR AL 60% DE ACERTACION
-                        if category.category_name == 'hojalata' and score >= 10:
+                        if category.category_name == 'vidrio' and score >= 10:
                             # TOMAR FOTO AL MATERIAL
-                            cv2.imwrite(saveImage('hojalata'),image)
+                            cv2.imwrite(saveImage('vidrio'),image)
                             # INCREMENTAR EL CONTADOR DE HOJALATA
                             hojalata+=1
                             fondo = 0
@@ -182,10 +182,11 @@ def run() -> None:
                             esp_master.write(material.encode())
                             esp_servos.write(material.encode())
                             esp_leds.write(material.encode())
-                            print('{} {}: {}'.format('Hojalata', aluminio, score))                          
+                            print('{} {}: {}'.format('Vojalata', aluminio, score))                          
                             break
                         # SI LA IA DETECTA EL FONDO OSEASE LA BANDA GIRANDO
                         if category.category_name == 'fondo' and score >= 50:
+                            cv2.imwrite(saveImage('fondo'),image)
                             fondo+=1
                             if fondo == 10:
                                 IA_STATUS_OFF = True
