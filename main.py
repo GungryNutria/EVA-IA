@@ -42,9 +42,9 @@ material = ''
 
 try:
     # CONFIGURAR SERIALES
-    esp_master = serial.Serial('/dev/ttyUSB0',115200)
-    esp_servos = serial.Serial('/dev/ttyUSB1',115200)
-    esp_leds = serial.Serial('/dev/ttyUSB2',115200)
+    esp_master = serial.Serial('/dev/ttyUSB_MAESTRO',115200)
+    esp_servos = serial.Serial('/dev/ttyUSB_SERVOS',115200)
+    esp_leds = serial.Serial('/dev/ttyUSB_LEDS',115200)
     logging.info("Las conexiones son correctas")
 except:
     logging.error("Esp32 Desconectada")
