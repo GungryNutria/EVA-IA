@@ -153,6 +153,8 @@ def run() -> None:
                             esp_master.write(material.encode())
                             esp_servos.write(material.encode())
                             esp_leds.write(material.encode())
+
+                            print('{} {}: {}'.format('Aluminio', aluminio, score))
                             break
                         # SI EL MATERIAL ES PLASTICO Y SU PORCENTAJE ES MAYOR AL 60% DE ACERTACION
                         if category.category_name == 'plastico' and score >= 10:
@@ -166,6 +168,7 @@ def run() -> None:
                             esp_master.write(material.encode())
                             esp_servos.write(material.encode())
                             esp_leds.write(material.encode())
+                            print('{} {}: {}'.format('Plastico', aluminio, score))
                             break
                         # SI EL MATERIAL ES PLASTICO Y SU PORCENTAJE ES MAYOR AL 60% DE ACERTACION
                         if category.category_name == 'hojalata' and score >= 10:
@@ -179,6 +182,7 @@ def run() -> None:
                             esp_master.write(material.encode())
                             esp_servos.write(material.encode())
                             esp_leds.write(material.encode())
+                            print('{} {}: {}'.format('Hojalata', aluminio, score))                          
                             break
                         # SI LA IA DETECTA EL FONDO OSEASE LA BANDA GIRANDO
                         if category.category_name == 'fondo' and score >= 50:
