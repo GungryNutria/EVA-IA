@@ -150,9 +150,9 @@ def run() -> None:
                             fondo = 0
                             # MANDAR UN CARACTER A LAS ESP PARA DARLES INSTRUCCIONES DE QUE COMPONENTES MOVER
                             material='A'
-                            esp_master.write(material.encode())
-                            esp_servos.write(material.encode())
-                            esp_leds.write(material.encode())
+                            # esp_master.write(material.encode())
+                            # esp_servos.write(material.encode())
+                            # esp_leds.write(material.encode())
 
                             print('{} {}: {}'.format('Aluminio', aluminio, score))
                             break
@@ -165,9 +165,9 @@ def run() -> None:
                             fondo = 0
                             # MANDAR UN CARACTER A LAS ESP PARA DARLES INSTRUCCIONES DE QUE COMPONENTES MOVER
                             material='P'
-                            esp_master.write(material.encode())
-                            esp_servos.write(material.encode())
-                            esp_leds.write(material.encode())
+                            # esp_master.write(material.encode())
+                            # esp_servos.write(material.encode())
+                            # esp_leds.write(material.encode())
                             print('{} {}: {}'.format('Plastico', plastico, score))
                             break
                         # SI EL MATERIAL ES PLASTICO Y SU PORCENTAJE ES MAYOR AL 60% DE ACERTACION
@@ -179,10 +179,10 @@ def run() -> None:
                             fondo = 0
                             # MANDAR UN CARACTER A LAS ESP PARA DARLES INSTRUCCIONES DE QUE COMPONENTES MOVER
                             material= 'H'
-                            esp_master.write(material.encode())
-                            esp_servos.write(material.encode())
-                            esp_leds.write(material.encode())
-                            print('{} {}: {}'.format('Vojalata', hojalata, score))                          
+                            #esp_master.write(material.encode())
+                            # esp_servos.write(material.encode())
+                            # esp_leds.write(material.encode())
+                            print('{} {}: {}'.format('Vidrio', hojalata, score))                          
                             break
                         # SI LA IA DETECTA EL FONDO OSEASE LA BANDA GIRANDO
                         if category.category_name == 'fondo' and score >= 50:
@@ -195,15 +195,15 @@ def run() -> None:
                             print(category.category_name + ': ' + str(fondo)+': '+ str(score) +'%')
                             break
                     # LIMPIAR EL BUFFER DE LOS SERIALES
-                    esp_master.flushOutput()
-                    esp_servos.flushOutput()
-                    esp_leds.flushOutput()
-                    esp_master.flushInput()
-                    esp_servos.flushInput()
-                    esp_leds.flushInput()
-                    esp_master.flush()
-                    esp_servos.flush()
-                    esp_leds.flush()
+                    # esp_master.flushOutput()
+                    # esp_servos.flushOutput()
+                    # esp_leds.flushOutput()
+                    # esp_master.flushInput()
+                    # esp_servos.flushInput()
+                    # esp_leds.flushInput()
+                    # esp_master.flush()
+                    # esp_servos.flush()
+                    # esp_leds.flush()
 
                     # SI ES PRESIONADO EL BOTON ROJO 
                     if IA_STATUS_OFF:
