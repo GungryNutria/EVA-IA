@@ -107,8 +107,8 @@ def run() -> None:
         bandas = 0
         IA_STATUS_ON = gpio.input(BTN_START)
         # SI SE RECIBE UN PULSO ALTO DEL ESP MAESTRO SE MANDARA A ACTUALIZAR EL ESTATUS DE LA MAQUINA A EL SERVIDOR
-        if IA_STATUS_ON:
-            os.system("java -jar Reciclador-comando.jar status 1")
+        # if IA_STATUS_ON:
+        #     os.system("java -jar Reciclador-comando.jar status 1")
         #MIENTRAS EL ESTATUS SEA DE ENCENDIDO 
         while IA_STATUS_ON:
             # MANDAR A CORRER LAS BANDAS  
@@ -224,9 +224,9 @@ def run() -> None:
                 # OBTENER EL ID DE LA TARJETA
                 TARJETA_UUID = getTarjeta()
                 # PUBLICAR SALDOS QUE SE ALCANZARON A ESCANEAR
-                os.system(f'java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {0.05*plastico} {0.03*aluminio} {0.05*hojalata}')
+                # os.system(f'java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {0.05*plastico} {0.03*aluminio} {0.05*hojalata}')
                 # CAMBIAR EL ESTATUS DE LA MAQUINA
-                os.system("java -jar Reciclador-comando.jar status 0")
+                # os.system("java -jar Reciclador-comando.jar status 0")
                 TARJETA_UUID = ''
 
         # MIENTRAS EL ESTATUS DE LA IA SEA APAGADO
@@ -236,9 +236,9 @@ def run() -> None:
             # OBTENER EL ID DE LA TARJETA
             TARJETA_UUID = getTarjeta()
             # MANDAR A PUBLICAR SALDOS
-            os.system(f'java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {0.02*plastico} {0.03*aluminio} {0.05*hojalata}')
+            # os.system(f'java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {0.02*plastico} {0.03*aluminio} {0.05*hojalata}')
             # CAMBIAR EL ESTATUS DE LA MAQUINA
-            os.system("java -jar Reciclador-comando.jar status 0")
+            # os.system("java -jar Reciclador-comando.jar status 0")
             # LIMPIAR LA VARIABLE TARJETA
             TARJETA_UUID = ''
             # CAMBIAR EL ESTATUS DE IA CERRADA PARA QUE NO CORRA OTRO CICLO
