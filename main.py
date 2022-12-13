@@ -8,7 +8,6 @@ import serial, os
 import cv2
 import logging
 import RPi.GPIO as gpio
-import model.material as m
 import threading
 import random
 from os.path import exists
