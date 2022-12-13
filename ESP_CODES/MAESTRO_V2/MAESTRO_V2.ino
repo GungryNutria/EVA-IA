@@ -6,12 +6,10 @@
 #include <Nextion.h>
 #include <SPI.h>
 #include <UNIT_PN532.h> //Librkjjuhjería Modificada
+#include <Wire.h>
 
 
 //****************************DECLARACION DE PINES*********************************
-#define startBtn 13
-#define stopBtn 33
-
 #define PN532_SCK  18
 #define PN532_MOSI 23
 #define PN532_SS   5
@@ -33,8 +31,8 @@ int maquinaEstado = 0;
 String porcentaje;
 String token;
 String creditos;
-const char* ssid = "ITQ-Eventos";
-const char* password = "evento.2021";
+const char* ssid = "BarSombras";
+const char* password = "BarSombras";
 String response;
 String GLOBAL_ID = "";   
 DynamicJsonDocument doc(2048);
@@ -57,7 +55,7 @@ NexText plasticos = NexText(1,1,"t0");
 NexText aluminio = NexText(1,2,"t1");
 NexText metal = NexText(1,3,"t2");
 NexButton finalBtn = NexButton(1,4,"b0");
-NexPage page1 = NexPage(1,1,"page1"); //PASAR PAGINA DE SALDO++++++++++
+NexPage page1 = NexPage(1,0,"page1"); //PASAR PAGINA DE SALDO++++++++++
 //SALDOS OBJ
 NexPage page2 = NexPage(2,0,"page2");
 NexText labelsaldo = NexText(2,1,"t5");
@@ -195,11 +193,10 @@ void proceso(void*ptr){
   digitalWrite(LED,HIGH);
          
    
-  // do{ //
-    
-  //  labelTarjeta.setText("Coloca tu tarjeta"); 
-  //  GLOBAL_ID = IDTarjeta();
-  //}while(GLOBAL_ID == "");
+  do{
+  labelTarjeta.setText("Coloca tu tarjeta"); 
+  GLOBAL_ID = IDTarjeta();
+  }while(GLOBAL_ID == "");
   
   //INICIO DEL PROCESO ....................................
   page1.show(); //CAMBIAR PAGINA A PROCESO
@@ -261,7 +258,8 @@ void setup() {
   pinMode(startSignal,OUTPUT);
   pinMode(stopSignal,OUTPUT);
   pinMode(LED,OUTPUT);
-  Serial.begin(115200); 
+  Serial.begin(115200);
+  digitalWrite(LED,HIGH);
 }
 
 void loop() {
@@ -271,7 +269,7 @@ void loop() {
       switch(material){
           case 'A':
           a++;
-          aluminio.setText(String(a));
+         aluminio.setText(String(a));
           break;
           case 'P':
           p++;
@@ -292,57 +290,3 @@ void loop() {
   nexLoop(nex_listen_list);
   
 }
-
-
-
-    /*RECIBIR DATO ULTRASONICOS CADA 10S ??
-    if(Serial.available()){
-      HCmaterial = String(Serial.readString());
-    
-      material = HCmaterial.charAt(0);
-      
-      for(int i = 1; i < HCmaterial.length(); i++){
-        
-        porcentaje = porcentaje + HCmaterial.charAt(i);
-      }
- 
-      HCmaterial = "";
-      
-    switch(material){
-        case 'A':
-        aluminio.setText(porcentaje);
-        porcentaje = "";
-        break;
-        case 'P':
-        plasticos.setText(porcentaje);
-        porcentaje = "";
-        break;
-        case 'H':
-        metal.setText(porcentaje);
-        porcentaje = "";
-        break;
-        case 'O':
-        organica.setText(porcentaje);
-        porcentaje = "";
-        break;
-        case 'D':
-        desconocido.setText(porcentaje);
-        porcentaje = "";
-        break;
-        case 'a':
-        aluminio.setText ("LLENO");
-        porcentaje = "";
-        break;
-        case 'p':
-        plasticos.setText ("LLENO");
-        porcentaje = "";
-        break;
-        case 'h':
-        metal.setText ("LLENO");
-        porcentaje = "";
-        break;
-        case 'o':
-        organica.setText (porcentaje);
-        porcentaje = "";
-        break;
-        */

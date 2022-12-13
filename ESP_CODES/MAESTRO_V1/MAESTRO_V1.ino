@@ -50,14 +50,14 @@ NexButton saldoBtn = NexButton(0,2,"b1");
 NexText labelTarjeta = NexText(0,3,"t0");
 NexPage page0 = NexPage(0,0,"page0"); //PASAR PAGINA DE PROCESO++++++++++
 //PROCESOS OBJ
-
 NexText plasticos = NexText(1,1,"t0");
 NexText aluminio = NexText(1,2,"t1");
 NexText metal = NexText(1,3,"t2");
-NexPage page1 = NexPage(1,1,"page1"); //PASAR PAGINA DE SALDO++++++++++
+NexButton finalBtn = NexButton(1,4,"b0");
+NexPage page1 = NexPage(1,0,"page1"); //PASAR PAGINA DE SALDO++++++++++
 //SALDOS OBJ
 NexPage page2 = NexPage(2,0,"page2");
-NexText labelsaldo = NexText(2,1,"t5");
+NexText labelsaldo = NexText(2,1,"t0");
 
 //REGISTRO DE EVENTOS
 NexTouch *nex_listen_list[]{
@@ -208,7 +208,7 @@ void proceso(void*ptr){
     }else if(codigo == "200"){
       GLOBAL_ID = GLOBAL_ID;
       labelTarjeta.setText("La tarjeta existe");
-      delay(1000);a
+      delay(1000);
     }else{
       GLOBAL_ID = "";
       labelTarjeta.setText("No hay conexion a internet");
@@ -228,7 +228,7 @@ void proceso(void*ptr){
   
   //INICIO DEL PROCESO ....................................
   page1.show(); //CAMBIAR PAGINA A PROCESO
-  labelproceso.setText("Presiona el boton rojo para terminar");
+  //labelproceso.setText("Presiona el boton rojo para terminar");
 
   //SEÑAL DE INICIO ESCLAVOS Y RASP
   digitalWrite(startSignal,HIGH);
