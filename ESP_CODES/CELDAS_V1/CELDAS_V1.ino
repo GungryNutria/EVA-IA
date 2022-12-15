@@ -80,14 +80,18 @@ void loop() {
     peso = scale.get_units();
     peso2 = scale2.get_units();
     peso3 = scale3.get_units();  
-    
-
+    Serial.println(peso);
+    Serial.println(peso2);
+    Serial.println(peso3);
     delay(1000);
 
     // CONSULTAR PESO DESPUES DE 1 SEGUNDO
     newPeso = scale.get_units();
     newPeso2 = scale2.get_units();
     newPeso3 = scale3.get_units();
+    Serial.println(newPeso);
+    Serial.println(newPeso2);
+    Serial.println(newPeso3);
     
     // SI EL PESO INICIAL  DE PLASTICO ES MENOR AL NUEVO
     if(peso+0.005 < newPeso){
