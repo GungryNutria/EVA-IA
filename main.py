@@ -84,7 +84,7 @@ def saveImage(material):
             return ruta
     except:
         print('Error al generar')
-        logging.error("No se pudo generar la imagen")
+        #logging.error("No se pudo generar la imagen")
 # METODO QUE CORRE LA INTELIGENCIA ARTIFICIAL
 def run() -> None:
     global aluminio, plastico, hojalata, fondo, procesos, material, asci, bandas, material, PESOS,TARJETA_UUID
@@ -221,7 +221,7 @@ def run() -> None:
                 time.sleep(1)
             except:
                 # EN CASO DE QUE LA CAMARA NO PRENDA EL ERROR SE GUARDARA EN EL LOG
-                logging.error("No se pudo prender la camara")
+                #logging.error("No se pudo prender la camara")
                 # APAGAR DE EMERGENCIA LAS BANDAS
                 gpio.output(BANDAS_OUTPUT,0)
                 # APAGAR EL ESTATUS DE ENCENDIDO
@@ -231,7 +231,7 @@ def run() -> None:
                 # OBTENER EL ID DE LA TARJETA
                 TARJETA_UUID = getTarjeta()
                 # PUBLICAR SALDOS QUE SE ALCANZARON A ESCANEAR
-                # os.system(f'java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {0.05*plastico} {0.03*aluminio} {0.05*hojalata}')
+                os.system(f'java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {0.05*plastico} {0.03*aluminio} {0.05*hojalata}')
                 # CAMBIAR EL ESTATUS DE LA MAQUINA
                 # os.system("java -jar Reciclador-comando.jar status 0")
                 TARJETA_UUID = ''
@@ -243,9 +243,9 @@ def run() -> None:
             # OBTENER EL ID DE LA TARJETA
             TARJETA_UUID = getTarjeta()
             # MANDAR A PUBLICAR SALDOS
-            # os.system(f'java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {0.02*plastico} {0.03*aluminio} {0.05*hojalata}')
+            os.system(f'java -jar Reciclador-comando.jar saldo {TARJETA_UUID} {0.02*plastico} {0.03*aluminio} {0.05*hojalata}')
             # CAMBIAR EL ESTATUS DE LA MAQUINA
-            # os.system("java -jar Reciclador-comando.jar status 0")
+            os.system("java -jar Reciclador-comando.jar status 0")
             # LIMPIAR LA VARIABLE TARJETA
             TARJETA_UUID = ''
             # CAMBIAR EL ESTATUS DE IA CERRADA PARA QUE NO CORRA OTRO CICLO

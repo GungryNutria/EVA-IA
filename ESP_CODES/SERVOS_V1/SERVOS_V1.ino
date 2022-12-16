@@ -65,43 +65,40 @@ void loop() {
   Serial.println(String(material));
   //Serial.println(String(Serial.read()));
 
-  if (digitalRead(sensorA) == HIGH) {
+
     if (material == 'P') {
-      while (digitalRead(btn1) != 1) {
-        delay(1700);
-        servoA.write(50);
-      }
+      
+        delay(2000);
+        servoA.write(60);
+        delay(2000);
+        servoA.write(1);
+        material = 'N';
+      
     }else{
         servoA.write(1);
       }
-  } else {
-    servoA.write(1);
-  }
-  /////////////////////////////// Aqui estara el otro servo y el otro sensor
-  if (digitalRead(sensorB) == HIGH) {
+  ///////////////////////////////  Aqui estara el otro servo y el otro sensor
     if (material == 'A') {
-      while (digitalRead(btn2) != 1) {
-        delay(1700);
+      
+        delay(4000);
         servoB.write(35);
-      }
+        delay(2000);
+        servoB.write(80);
+        material = 'N';
     }else{
       servoB.write(80);
     }
-  } else {
-    servoB.write(80);
-  }
-  //////////////////////////////// Aqui estara el otro servo y el otro sensor
 
-  if (digitalRead(sensorC) == HIGH) {
+  
+  //////////////////////////////// Aqui estara el otro servo y el otro sensor
     if (material == 'H') {
-      while (digitalRead(btn3) != 1) {
-        delay(1700);
+      
+        delay(6000);
         servoC.write(50);
-      }
+        delay(1000);
+        servoC.write(1);        
+        material = 'N';
     }else{
       servoC.write(1);
-    }
-  } else {
-    servoC.write(1);
-  } 
+    } 
 }
