@@ -75,7 +75,7 @@ def saveImage(material):
         # GENERADOR DE ID UNICO PARA LA IMAGEN
         image_id = str(random.randint(0,10000))
         # RUTA CON EL ID Y EL TIPO DE MATERIAL
-        ruta = "home/admin/EVA-IA/materiales/{}/{}_{}.jpg".format(material,material,image_id)
+        ruta = "materiales/{}/{}_{}.jpg".format(material,material,image_id)
         # SI EXISTE LA RUTA VUELVE A GENERAR OTRO NOMBRE
         if exists(ruta):
             return saveImage(material)
@@ -91,7 +91,7 @@ def run() -> None:
     
     # INICIALIZACION DEL MODELO DE CLASIFICACION DE IMAGENES
     # ASIGNACION DEL MODELO DE APRENDICAJE Y NUMERO DE HILOS CORRERA
-    base_options = core.BaseOptions(file_name='home/admin/EVA-IA/model.tflite', use_coral=False, num_threads=4)
+    base_options = core.BaseOptions(file_name='model.tflite', use_coral=False, num_threads=4)
     # ASIGNACION DE NUMERO DE RESULTADOS QUE SE QUIEREN MOSTRAR Y SU PROMEDIO DE ACEPTACION
     classification_options = processor.ClassificationOptions(max_results=3, score_threshold=0.0)
     # ASIGNACION DE CONFIGURACIONES PASADAS
