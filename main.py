@@ -16,7 +16,7 @@ from tflite_support.task import processor
 from tflite_support.task import vision
 
 #CONFIGURAR UN LOG BASICO PARA LA IA
-logging.basicConfig(filename='home/admin/EVA-IA/eva.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+#logging.basicConfig(filename='home/admin/EVA-IA/eva.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
 
 # PINES DEL BOTON DE START Y STOP
 BTN_START = 17
@@ -45,9 +45,10 @@ try:
     esp_master = serial.Serial('/dev/ttyUSB_MAESTRO',115200)
     esp_servos = serial.Serial('/dev/ttyUSB_SERVOS',115200)
     esp_leds = serial.Serial('/dev/ttyUSB_LEDS',115200)
-    logging.info("Las conexiones son correctas")
+    #logging.info("Las conexiones son correctas")
 except:
-    logging.error("Esp32 Desconectada")
+    print('Error en Seriales')
+    #logging.error("Esp32 Desconectada")
     # MANDAR ERROR AL SERVIDOR
 
 def getTarjeta():
@@ -82,7 +83,8 @@ def saveImage(material):
         else:
             return ruta
     except:
-        logging.error("No se pudo generar la imagen")
+        print('Error al generar ruta')
+        # logging.error("No se pudo generar la imagen")
 # METODO QUE CORRE LA INTELIGENCIA ARTIFICIAL
 def run() -> None:
     global aluminio, plastico, hojalata, fondo, procesos, material, asci, bandas, material, PESOS,TARJETA_UUID
@@ -219,7 +221,7 @@ def run() -> None:
                 time.sleep(1)
             except:
                 # EN CASO DE QUE LA CAMARA NO PRENDA EL ERROR SE GUARDARA EN EL LOG
-                logging.error("No se pudo prender la camara")
+                # logging.error("No se pudo prender la camara")
                 # APAGAR DE EMERGENCIA LAS BANDAS
                 gpio.output(BANDAS_OUTPUT,0)
                 # APAGAR EL ESTATUS DE ENCENDIDO
